@@ -2,7 +2,7 @@ package mongohandler;
 
 import beans.Profile;
 import beans.Team;
-import util.AccountID;
+import beans.AccountID;
 
 import java.util.List;
 
