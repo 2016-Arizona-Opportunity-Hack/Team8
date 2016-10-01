@@ -125,17 +125,6 @@
     }
 </script>
 
-<!--
-  Below we include the Login Button social plugin. This button uses
-  the JavaScript SDK to present a graphical Login button that triggers
-  the FB.login() function when clicked.
--->
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
-
-
-<div id="status">
-</div>
 <!-- Navigation -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
@@ -159,9 +148,6 @@
                 </li>
                 <li>
                     <a href="team.html">Team</a>
-                </li>
-                <li>
-                    <div class="fb-login-button" data-max-rows="5" data-size="large" data-show-faces="true" data-auto-logout-link="true"></div>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Pages<b class="caret"></b></a>
@@ -187,6 +173,7 @@
             <h1 class="page-header">Your Profile
                 <small>Your Name</small>
             </h1>
+            <div class="fb-login-button col-lg-8" data-max-rows="5" data-size="large" data-show-faces="true" data-auto-logout-link="true"></div>
             <ol class="breadcrumb">
                 <li><a href="index.html">Home</a>
                 </li>
