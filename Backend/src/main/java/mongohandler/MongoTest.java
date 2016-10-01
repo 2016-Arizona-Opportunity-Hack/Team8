@@ -1,6 +1,4 @@
-package mongodb;
-
-import com.mongodb.client.MongoCollection;
+package mongohandler;
 
 /**
  * Created by nick on 10/1/16.
