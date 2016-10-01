@@ -89,7 +89,10 @@
             xfbml: true,  // parse social plugins on this page
             version: 'v2.5' // use graph api version 2.5
         });
-
+        FB.login(function(response){
+            // Handle the response object, like in statusChangeCallback() in our demo
+            // code.
+        });
         // Now that we've initialized the JavaScript SDK, we call
         // FB.getLoginStatus().  This function gets the state of the
         // person visiting this page and can return one of three states to
