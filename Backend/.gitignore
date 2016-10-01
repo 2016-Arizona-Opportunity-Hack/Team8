@@ -25,7 +25,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
-
+.idea
+.gradle
 # Eclipse Core
 .project
 
