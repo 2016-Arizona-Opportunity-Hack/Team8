@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     compile 'org.apache.tomcat:tomcat-catalina:7.0.47'
-    compile 'org.mongohandler:mongohandler-driver:3.3.0'
+    compile 'org.mongodb:mongo-java-driver:3.3.0'
     compile "javax.ws.rs:jsr311-api:1.1.1"
     compile 'com.sun.jersey:jersey-server:1.13'
     compile 'com.sun.jersey:jersey-core:1.13'
