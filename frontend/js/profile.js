@@ -28,3 +28,39 @@ function logMiles(){
 }
 
 getData(profileName, populatePage)
+
+var ctx = document.getElementById("canvas");
+var data = {
+    labels: ["You"],
+    datasets: [
+        {
+            backgroundColor: [
+                'rgba(253,195,14, 0.2)'
+            ],
+            borderColor: [
+                'rgba(253,195,25,1)'
+            ],
+            borderWidth: 1,
+            data: [400]
+        }
+    ]
+};
+var canvas = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: data,
+    options: {
+            scales: {
+                xAxes: [{
+                    display: true,
+                    ticks: {
+                        beginAtZero: true,    // minimum will be 0, unless there is a lower value.
+                        max: 565,
+                    }
+                }]
+            },
+        responsive: true,
+        legend: {
+            display: false
+        }
+    }
+});
