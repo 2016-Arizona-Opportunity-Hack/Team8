@@ -67,6 +67,20 @@
             statusChangeCallback(response);
         });
     }
+    function retrieveUserInfo() {
+        FB.api(
+                '/me',
+                'GET',
+                {"fields":"email"},
+                function(response) {
+                    FB.getLoginStatus(function(response) {
+                        if (response.status === 'connected') {
+                            var accessToken = response.authResponse.accessToken;
+                        }
+                    } );
+                }
+        );
+    }
 
     window.fbAsyncInit = function () {
         FB.init({
@@ -96,18 +110,7 @@
         FB.getLoginStatus(function (response) {
             statusChangeCallback(response);
         });
-        FB.api(
-                '/me',
-                'GET',
-                {"fields":"email"},
-                function(response) {
-                    FB.getLoginStatus(function(response) {
-                        if (response.status === 'connected') {
-                            var accessToken = response.authResponse.accessToken;
-                        }
-                    } );
-                }
-        );
+
 
     };
 
