@@ -8,6 +8,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
+import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import static com.mongodb.client.model.Filters.*;
 
@@ -147,7 +148,7 @@ public class MongoHandler implements MongoOperator {
 
             // Update users total count
             profileCollection.updateOne(new Document(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID()),
-                    new Document(MongoConstants.TOTAL_MILES_FIELD, totalMiles));
+                    new Document("$set", new Document(MongoConstants.TOTAL_MILES_FIELD, totalMiles)));
             // Add a new miles log to collection
             addMilesLogToMilesCollection(miles);
 
