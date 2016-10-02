@@ -1,5 +1,7 @@
 package gallentserver;
 import beans.AccountID;
+import beans.Team;
+import mongohandler.MongoException;
 import mongohandler.MongoHandler;
 import mongohandler.MongoOperator;
 import org.codehaus.jackson.JsonParseException;
@@ -48,7 +50,7 @@ public class LoginWS {
         }
 
         System.out.println("Data Received: " + crunchifyBuilder.toString());
-        String callStatus = "200";
+        String callStatus = "success";
 
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -66,14 +68,25 @@ public class LoginWS {
 
             e.printStackTrace();
         } catch (JsonMappingException e) {
+            callStatus = "jsonError";
             e.printStackTrace();
         } catch (IOException e) {
+            callStatus = "IOError";
+            e.printStackTrace();
+        } catch (MongoException e) {
+            callStatus = "mongoError";
             e.printStackTrace();
         }
 
-        return "{\n" +
-                "    \"status\" : \"200\"\n" +
-                "}";
+        ObjectMapper mapper = new ObjectMapper();
+        String errorJson = "";
+        try {
+            Error error = mapper.readValue(callStatus, Error.class);
+            errorJson = mapper.writeValueAsString(error);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return errorJson;
 
     }
 }

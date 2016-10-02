@@ -2,6 +2,7 @@ package gallentserver;
 
 import beans.Team;
 import beans.TeamID;
+import mongohandler.MongoException;
 import mongohandler.MongoHandler;
 import mongohandler.MongoOperator;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -39,7 +40,12 @@ public class TeamWS {
 
         TeamID teamID = new TeamID();
         teamID.setTeamID(teamId);
-        Team team = mongoOperator.getTeam(teamID);
+        Team team = null;
+        try {
+            team = mongoOperator.getTeam(teamID);
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = null;
         try {
