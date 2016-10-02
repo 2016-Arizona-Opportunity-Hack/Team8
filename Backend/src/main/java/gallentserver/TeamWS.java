@@ -28,17 +28,17 @@ public class TeamWS {
     @GET
 
     @Produces(MediaType.APPLICATION_JSON)
-    public String getTeam(@HeaderParam("teamID") String accountID) {
+    public String getTeam(@HeaderParam("teamID") String teamId) {
 
         Object result = null;
         JSONObject jobject = null;
         String status = null;
         StringBuilder sb = new StringBuilder();
 
-        System.out.println("account ID " +accountID);
+        System.out.println("team ID " +teamId);
 
         TeamID teamID = new TeamID();
-        teamID.setTeamID(accountID);
+        teamID.setTeamID(teamId);
         Team team = mongoOperator.getTeam(teamID);
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = null;

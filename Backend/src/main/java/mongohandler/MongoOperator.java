@@ -20,5 +20,7 @@ public interface MongoOperator {
 
     Team getTeam(TeamID teamID);
 
+    Profile getProfile(AccountID accountID);
+
     void addTeamMember(Team team, Profile newTeamMember);
 }
