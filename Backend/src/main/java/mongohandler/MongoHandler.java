@@ -28,7 +28,7 @@ public class MongoHandler implements MongoOperator {
      * Defining the constructors for the client
      */
     public MongoHandler() {
-        client = new MongoClient();
+        client = new MongoClient(MongoConstants.DEFAULT_HOSTNAME, MongoConstants.DEFAULT_PORT);
         client.getDatabase(MongoConstants.DATABASE_NAME);
     }
 
