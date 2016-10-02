@@ -238,7 +238,7 @@
             <p>Log the miles you covered today</p>
             <br>
 
-            <form id = "logMiles" onSubmit="return logMiles()" class="form-inline">
+            <form id = "logMiles" method="post" action="http://10.143.186.63:8080/Backend/rest/login" onSubmit="return logMiles()" class="form-inline">
                 <div class="form-group">
                     <label for="miles">Miles:</label>
                     <input type="number" class="form-control" id="miles">
