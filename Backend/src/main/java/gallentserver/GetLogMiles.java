@@ -9,16 +9,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 /**
  * Created by vishal on 02/10/16.
  */
+@Path("getlogmiles")
 public class GetLogMiles {
 
     MongoOperator mongoOperator = new MongoHandler();
