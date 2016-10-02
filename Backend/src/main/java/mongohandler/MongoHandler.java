@@ -173,9 +173,9 @@ public class MongoHandler implements MongoOperator {
         Iterator<Document> teamIterator = teamCollection.find(eq(MongoConstants.TEAM_ID_FIELD, teamID.getTeamID())).iterator();
         if (teamIterator.hasNext()){
             Document doc = teamIterator.next();
-            BasicDBList teamMembers = (BasicDBList)doc.get(MongoConstants.TEAM_MEMBERS_FIELD);
+            List<String> teamMembers = (List<String>)doc.get(MongoConstants.TEAM_MEMBERS_FIELD);
             int teamMiles = 0;
-            for (Object account : teamMembers){
+            for (String account : teamMembers){
                 AccountID accountID = new AccountID((String)account);
                 teamMiles += getProfileTotalMiles(accountID);
             }
