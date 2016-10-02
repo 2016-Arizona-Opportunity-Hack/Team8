@@ -138,16 +138,18 @@ public class MongoHandler implements MongoOperator {
         MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
         MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
         Iterator<Document> foundProfilesIterator = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID())).iterator();
+
+
         if (foundProfilesIterator.hasNext()){
             Document doc = foundProfilesIterator.next();
             int totalMiles = doc.getInteger(MongoConstants.TOTAL_MILES_FIELD);
             totalMiles += miles.getMiles();
-            doc.put(MongoConstants.TOTAL_MILES_FIELD, totalMiles);
+
             // Update users total count
-            profileCollection.insertOne(doc);
+            profileCollection.updateOne(new Document(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID()),
+                    new Document(MongoConstants.TOTAL_MILES_FIELD, totalMiles));
             // Add a new miles log to collection
             addMilesLogToMilesCollection(miles);
-
 
         }
     }
