@@ -107,11 +107,16 @@
 
     // Here we run a very simple test of the Graph API after login is
     // successful.  See statusChangeCallback() for when this call is made.
-    function profilePhoto(userID) {
-        FB.api('/me', function (response) {
-            console.log('Attempted fb pic')
-        });
-    }
+
+    var userEmail = FB.api('/me?fields=email', function() {
+        console.log('stored email')});
+
+    var firstName = FB.api('/me?fields=first_name', function() {
+        console.log('stored first name')});
+
+    var lastName = FB.api('/me?fields=last_name', function() {
+        console.log('stored last name')});
+
     function testAPI() {
         console.log('Welcome!  Fetching your information.... ');
         FB.api('/me?fields=name,email', function (response) {
@@ -182,7 +187,7 @@
                 <small>Your Name</small>
 
             </h1>
-            <img src="http://graph.facebook.com/userid_here/picture">
+
             <div onclick="facebookLogin" align="right" class="fb-login-button" data-max-rows="5" data-size="large"
                  data-show-faces="false"
                  data-auto-logout-link="true">
