@@ -109,6 +109,13 @@ public class MongoHandler implements MongoOperator {
     }
 
     @Override
+    public Profile getProfile(AccountID accountID) {
+
+
+        return null;
+    }
+
+    @Override
     public void addTeamMember(Team team, Profile newTeamMember) {
 
     }
