@@ -1,6 +1,7 @@
 package gallentserver;
 
 import beans.Team;
+import beans.TeamID;
 import mongohandler.MongoHandler;
 import mongohandler.MongoOperator;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -36,6 +37,16 @@ public class TeamWS {
 
         System.out.println("account ID " +accountID);
 
+        TeamID teamID = new TeamID();
+        teamID.setTeamID(accountID);
+        Team team = mongoOperator.getTeam(teamID);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = null;
+        try {
+            jsonInString = mapper.writeValueAsString(team);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         StringBuilder crunchifyBuilder = new StringBuilder();
@@ -63,9 +74,7 @@ public class TeamWS {
             e.printStackTrace();
         }
 
-        return "{\n" +
-                "  \"status\": true\n" +
-                "}";
+        return jsonInString;
     }
 
 
