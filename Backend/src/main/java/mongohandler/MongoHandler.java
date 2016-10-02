@@ -103,6 +103,8 @@ public class MongoHandler implements MongoOperator {
                 teamMemberList.add(teamMemberProfile);
             }
             matchedTeam.setMembers(teamMemberList);
+            matchedTeam.setTeamMiles(getTeamMiles(teamID));
+
             return matchedTeam;
         }
         return null;

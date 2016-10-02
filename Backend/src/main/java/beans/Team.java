@@ -11,6 +11,16 @@ public class Team {
     // Sample JSON
     public String teamName;
 
+    public int getTeamMiles() {
+        return teamMiles;
+    }
+
+    public void setTeamMiles(int teamMiles) {
+        this.teamMiles = teamMiles;
+    }
+
+    public int teamMiles;
+
     public List<Profile> members;
 
     public String getTeamName() {
