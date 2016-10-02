@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/src/Facebook/autoload.php';
+require_once __DIR__ . '/facebook-sdk-5/autoload.php';
 $fb = new Facebook\Facebook([
   'app_id' => '928735997231583',
   'app_secret' => 'ea565d48cf38ac2ecc1f714ef1642a8c',
