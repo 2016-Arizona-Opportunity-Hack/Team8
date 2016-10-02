@@ -109,7 +109,11 @@
         // These three cases are handled in the callback function.
         function facebookLogin() {
             FB.getLoginStatus(function (response) {
-                statusChangeCallback(response);
+                if (response.status === 'connected') {
+                    console.log(response.authResponse.accessToken);
+
+                    statusChangeCallback(response);
+                }
             });
         }
 
@@ -131,6 +135,7 @@
     function testAPI() {
         console.log('Welcome!  Fetching your information.... ');
         FB.api('/me?fields=first_name,last_name,email', function (response) {
+            console.log(JSON.stringify(response));
             console.log('Successful login for: ' + response.first_name + " " + response.last_name + ' at ' + response.email);
             document.getElementById('status').innerHTML =
                     'Thanks for logging in, ' + response.name + '!';
