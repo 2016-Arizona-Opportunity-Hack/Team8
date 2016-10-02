@@ -1,9 +1,6 @@
 package mongohandler;
 
-import beans.Profile;
-import beans.Team;
-import beans.AccountID;
-import beans.TeamID;
+import beans.*;
 import com.mongodb.Mongo;
 
 import java.util.List;
@@ -24,4 +21,8 @@ public interface MongoOperator {
     Profile getProfile(AccountID accountID) throws MongoException;
 
     void addTeamMember(Team team, Profile newTeamMember) throws MongoException;
+
+    void logMiles(AccountID accountID, LoggedMiles miles) throws MongoException;
+
+    void getTeamMiles(TeamID teamID) throws MongoException;
 }
