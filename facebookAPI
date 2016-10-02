@@ -2,7 +2,7 @@
 $fb = new Facebook\Facebook([
   'app_id' => '928735997231583',
 'app_secret' => 'ea565d48cf38ac2ecc1f714ef1642a8c',
-'default_graph_version' => 'v2.7',
+'default_graph_version' => 'v2.2',
 ]);
 
 try {
