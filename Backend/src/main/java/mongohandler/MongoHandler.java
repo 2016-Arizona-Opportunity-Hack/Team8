@@ -3,6 +3,7 @@ package mongohandler;
 import beans.AccountID;
 import beans.Profile;
 import beans.Team;
+import beans.TeamID;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -21,26 +22,23 @@ public class MongoHandler implements MongoOperator {
     /**
      * Defining the constructors for the client
      */
-    public MongoHandler(){
+    public MongoHandler() {
         client = new MongoClient();
         client.getDatabase(MongoConstants.DATABASE_NAME);
     }
 
-    public MongoHandler(String hostname){
+    public MongoHandler(String hostname) {
         client = new MongoClient(hostname);
         client.getDatabase(MongoConstants.DATABASE_NAME);
     }
 
-    public MongoHandler(String hostname, int port){
+    public MongoHandler(String hostname, int port) {
         client = new MongoClient(hostname, port);
         client.getDatabase(MongoConstants.DATABASE_NAME);
     }
 
-
     @Override
     public boolean exists(AccountID account) {
-        MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-
         return false;
     }
 
@@ -55,13 +53,8 @@ public class MongoHandler implements MongoOperator {
     }
 
     @Override
-    public void getProfilesWithIDs(List<AccountID> accountIDs) {
-
-    }
-
-    @Override
-    public void getProfiles(List<Profile> profiles) {
-
+    public Team getTeam(TeamID teamID) {
+        return null;
     }
 
     @Override

@@ -11,4 +11,6 @@ public class MongoConstants {
     static final String DEFAULT_HOSTNAME = "localhost";
     static final int DEFAULT_PORT = 27017;
 
+    static final String ACCOUNT_ID_FIELD = "AccountID";
+
 }
