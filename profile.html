@@ -47,6 +47,9 @@
 <body>
 
 <script>
+    var userEmail;
+    var firstName;
+    var lastName;
     // This is called with the results from from FB.getLoginStatus().
     function statusChangeCallback(response) {
         console.log('statusChangeCallback');
@@ -77,8 +80,10 @@
         FB.getLoginStatus(function (response) {
             statusChangeCallback(response);
         });
-        FB.api('/me?fields=email', function(response){
-            var userEmail = response.email
+        FB.api('/me?fields=email,first_name,last_name', function(response){
+            userEmail = response.email;
+            firstName = response.first_name;
+            lastName = response.last_name;
         });
     }
 
@@ -126,7 +131,7 @@
     function testAPI() {
         console.log('Welcome!  Fetching your information.... ');
         FB.api('/me?fields=name,email', function (response) {
-            console.log('Successful login for: ' + response.name + ' at ' + response.email + " at " + response.picture);
+            console.log('Successful login for: ' + response.first_name + " " + response.last_name + ' at ' + response.email);
             document.getElementById('status').innerHTML =
                     'Thanks for logging in, ' + response.name + '!';
         });
