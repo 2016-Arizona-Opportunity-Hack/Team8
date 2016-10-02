@@ -30,6 +30,17 @@
     <script src="js/jquery.js"></script>
     <script src="js/Chart.min.js"></script>
 
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/Chart.min.js"></script>
+    <script src="js/FBAuth.js"></script>
+    <script src="js/ResponseHandlerHub.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/profile.js"></script>
+
 
 </head>
 
@@ -123,6 +134,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
 
+
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -161,7 +173,7 @@
         <div class="col-lg-12">
 
             <p id="demo"></p>
-            <!-- Grab Profiles -->
+            <!--&lt;!&ndash; Grab Profiles &ndash;&gt;
             <script>
 
                 var text = "profile.json";
@@ -173,7 +185,7 @@
                         obj.last_name + "<br>" +
                         obj.first_name + "<br>" +
                         obj.ID + "<br>";
-            </script>
+            </script>-->
 
             <h1 class="page-header">Your Profile
                 <small>Your Name</small>
@@ -217,7 +229,7 @@
                         display: true,
                         ticks: {
                             beginAtZero: true,    // minimum will be 0, unless there is a lower value.
-                            max: 565,
+                            max: 565
                         }
                     }]
                 },
@@ -238,12 +250,14 @@
             <p>Log the miles you covered today</p>
             <br>
 
-            <form id = "logMiles" method="post" action="http://10.143.186.63:8080/Backend/rest/login" onSubmit="return logMiles()" class="form-inline">
+            <form id="logMiles" method="post" action="http://10.143.186.63:8080/Backend/rest/login"
+                  onSubmit="return logMiles()" class="form-inline">
+
                 <div class="form-group">
                     <label for="miles">Miles:</label>
                     <input type="number" class="form-control" id="miles">
                 </div>
-                <div class="form-group" style = 'min-width:10px'></div>
+                <div class="form-group" style='min-width:10px'></div>
                 <div class="form-group">
                     <label for="activity">Activity:</label>
                     <select class="form-control" id="activity">
@@ -253,7 +267,7 @@
                         <option>Boating</option>
                     </select>
                 </div>
-                <div class="form-group" style = 'min-width:10px'></div>
+                <div class="form-group" style='min-width:10px'></div>
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
         </div>
@@ -272,19 +286,8 @@
     </footer>
 
 </div>
+
 <!-- /.container -->
-
-<!-- jQuery -->
-<script src="js/jquery.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="js/bootstrap.min.js"></script>
-<script src="js/Chart.min.js"></script>
-<script src="js/FBAuth.js"></script>
-<script src="js/ResponseHandlerHub.js"></script>
-<script src="js/common.js"></script>
-<script src="js/profile.js"></script>
-
 
 </body>
 

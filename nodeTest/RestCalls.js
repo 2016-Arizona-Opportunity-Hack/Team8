@@ -42,11 +42,11 @@ var http = require('http');
 // do a POST request
 // create the JSON object
 jsonObject = JSON.stringify({
-"totalMiles" : 1,
-   "teamName" : "abcd",
-   "firstName": "aaaaa",
-   "lastName" : "aaaaaeewwf",
-   "id" : "2222"
+"totalMiles" : 23,
+   "teamName" : "",
+   "firstName": "raffi",
+   "lastName" : "shahbazian",
+   "id" : "1"
 });
 
 // prepare the header
