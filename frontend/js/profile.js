@@ -21,6 +21,8 @@ function logMiles(){
     callServer('logmiles', {'miles':miles, 'activity': activity}, requestResponse)
 }
 
+// Function definition ends
+
 getData(profileName, populatePage)
 
 var ctx = document.getElementById("canvas");
