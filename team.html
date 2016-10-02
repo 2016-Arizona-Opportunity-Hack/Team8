@@ -78,8 +78,47 @@
             </div>
         </div>
         <!-- /.row -->
+        <canvas id="teamCanvas" width="400" height="100"></canvas>
 
         <canvas id="canvas" width="400" height="100"></canvas>
+        <script>
+            var ctx = document.getElementById("teamCanvas");
+            var data = {
+                labels: ["TeamName"],
+                datasets: [
+                    {
+                        backgroundColor: [
+                            'rgba(253,195,14, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(253,195,25,1)'
+                        ],
+                        borderWidth: 1,
+                        data: [75]
+                    }
+                ]
+            };
+            var teamCanvas = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: data,
+                options: {
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,    // minimum will be 0, unless there is a lower value.
+                                max: 565
+                            }
+                        }]
+                    },
+                    responsive: true,
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+
+        </script>
         <script>
             var ctx = document.getElementById("canvas");
 
@@ -106,12 +145,19 @@
                 type: 'horizontalBar',
                 data: data,
                 options: {
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,    // minimum will be 0, unless there is a lower value.
+                            }
+                        }],
+                    },
                     responsive: true,
                     legend: {
                         display: false
                     }
                 }
-
             });
 
         </script>

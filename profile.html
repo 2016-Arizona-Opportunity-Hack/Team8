@@ -29,6 +29,8 @@
     <![endif]-->
     <script src="js/jquery.js"></script>
     <script src="js/Chart.min.js"></script>
+
+
 </head>
 
 <body>
@@ -213,6 +215,15 @@
             type: 'horizontalBar',
             data: data,
             options: {
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,    // minimum will be 0, unless there is a lower value.
+                                max: 565,
+                            }
+                        }]
+                    },
                 responsive: true,
                 legend: {
                     display: false
