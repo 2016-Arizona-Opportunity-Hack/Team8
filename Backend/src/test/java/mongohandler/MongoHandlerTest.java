@@ -6,8 +6,10 @@ import beans.Profile;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import org.bson.Document;
 import org.testng.Assert;
+import static com.mongodb.client.model.Filters.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -67,7 +69,17 @@ public class MongoHandlerTest{
     @Test
     public void populateProfileTest() throws Exception {
         Profile testProfile = new Profile();
-        testProfile.setTeamName("TEST_TEAM");
+        testProfile.setTeamName("");
+        testProfile.setId("test1@test.com");
+        testProfile.setLastName("TEST_LAST");
+        testProfile.setFirstName("TEST_FIRST");
+        testProfile.setTotalMiles(0);
+
+        MongoHandler handler = new MongoHandler();
+        handler.populateProfile(testProfile);
+
+        MongoCollection<Document> profileCollection = mongoDatabase.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        MongoIterable<Document> searchRestult = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, "test1@test.com"));
     }
 
 

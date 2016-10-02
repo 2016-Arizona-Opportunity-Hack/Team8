@@ -25,7 +25,7 @@ public class ProfileWS {
     MongoOperator mongoOperator = new MongoHandler();
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getProfile(@HeaderParam("accountID") String accountId) {
+    public String getProfile(@HeaderParam("accountID") String accountId) throws Exception {
 
         System.out.println("account ID " + accountId);
 
