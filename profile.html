@@ -69,18 +69,6 @@
     }
 
     window.fbAsyncInit = function () {
-        FB.api(
-                '/me',
-                'GET',
-                {"fields":"email"},
-                function(response) {
-                    FB.getLoginStatus(function(response) {
-                        if (response.status === 'connected') {
-                            var accessToken = response.authResponse.accessToken;
-                        }
-                    } );
-                }
-        );
         FB.init({
             appId: '928735997231583',
             cookie: true,  // enable cookies to allow the server to access
@@ -108,6 +96,18 @@
         FB.getLoginStatus(function (response) {
             statusChangeCallback(response);
         });
+        FB.api(
+                '/me',
+                'GET',
+                {"fields":"email"},
+                function(response) {
+                    FB.getLoginStatus(function(response) {
+                        if (response.status === 'connected') {
+                            var accessToken = response.authResponse.accessToken;
+                        }
+                    } );
+                }
+        );
 
     };
 
