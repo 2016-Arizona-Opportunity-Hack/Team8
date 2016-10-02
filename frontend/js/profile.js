@@ -1,6 +1,6 @@
 // This code loads and populate profile.html
 
-var dummyJSON = '{"total_miles": 0.0, "team_name": "", "last_name": "lastName", "first_name": "firstName", "ID": "ID123"}'
+var dummyJSON = '{"total_miles": 0.0, "team_name": "", "last_name": "Doe", "first_name": "John", "ID": "ID123"}'
 var profileName = 'NA' // Need to get it from FB
 
 function getData(profileName, callback){
@@ -31,36 +31,33 @@ getData(profileName, populatePage)
 
 var ctx = document.getElementById("canvas");
 var data = {
-    labels: ["You"],
+    labels: ["02-10", "02-11", "02-12", "02-13", "02-14", "02-15", "02-16"],
     datasets: [
         {
-            backgroundColor: [
-                'rgba(253,195,14, 0.2)'
-            ],
-            borderColor: [
-                'rgba(253,195,25,1)'
-            ],
-            borderWidth: 1,
-            data: [400]
+            label: "Activity",
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(75,192,192,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [65, 59, 80, 81, 56, 55, 40], // data from service
+            spanGaps: false,
         }
     ]
 };
-var canvas = new Chart(ctx, {
-    type: 'horizontalBar',
-    data: data,
-    options: {
-            scales: {
-                xAxes: [{
-                    display: true,
-                    ticks: {
-                        beginAtZero: true,    // minimum will be 0, unless there is a lower value.
-                        max: 565,
-                    }
-                }]
-            },
-        responsive: true,
-        legend: {
-            display: false
-        }
-    }
+var myLineChart = new Chart(ctx, {
+    type: 'line',
+    data: data
 });
