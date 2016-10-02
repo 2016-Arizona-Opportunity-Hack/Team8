@@ -3,6 +3,7 @@ package mongohandler;
 import beans.Profile;
 import beans.Team;
 import beans.AccountID;
+import beans.TeamID;
 
 import java.util.List;
 
@@ -17,9 +18,7 @@ public interface MongoOperator {
 
     void populateTeam(Team team);
 
-    void getProfilesWithIDs(List<AccountID> accountIDs);
-
-    void getProfiles(List<Profile> profiles);
+    Team getTeam(TeamID teamID);
 
     void addTeamMember(Team team, Profile newTeamMember);
 }
