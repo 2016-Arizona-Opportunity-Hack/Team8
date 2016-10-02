@@ -1,15 +1,16 @@
 package gallentserver;
 
+import beans.Team;
+import mongohandler.MongoHandler;
+import mongohandler.MongoOperator;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -20,18 +21,25 @@ import java.io.InputStreamReader;
 public class TeamWS {
 
 
+    MongoOperator mongoOperator = new MongoHandler();
+
+
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+
     @Produces(MediaType.APPLICATION_JSON)
-    public String getTeam(final InputStream incomingData) {
+    public String getTeam(@HeaderParam("teamID") String accountID) {
 
         Object result = null;
         JSONObject jobject = null;
         String status = null;
         StringBuilder sb = new StringBuilder();
 
+        System.out.println("account ID " +accountID);
+
+
+
         StringBuilder crunchifyBuilder = new StringBuilder();
-        try {
+       /* try {
             BufferedReader in = new BufferedReader(new InputStreamReader(incomingData));
             String line = null;
             while ((line = in.readLine()) != null) {
@@ -39,10 +47,12 @@ public class TeamWS {
             }
         } catch (Exception e) {
             System.out.println("Error Parsing: - ");
-        }
+        }*/
+
 
         System.out.println("Data Received: " + crunchifyBuilder.toString());
-        ObjectMapper mapper = new ObjectMapper();
+
+      //  callMongoForTeam(crunchifyBuilder.toString());
 
 
 
@@ -53,7 +63,25 @@ public class TeamWS {
             e.printStackTrace();
         }
 
-        return "test";
+        return "{\n" +
+                "  \"status\": true\n" +
+                "}";
     }
+
+
+    private void callMongoForTeam(final String TeamJson){
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Team team = mapper.readValue(TeamJson, Team.class);
+            System.out.println("team " + team.getTeamName() );
+            System.out.println("team member " + team.getMembers().get(0).firstName );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 
 }

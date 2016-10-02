@@ -1,11 +1,14 @@
 package beans;
 
+import java.io.Serializable;
+
 /**
  * Created by nick on 10/1/16.
  */
 public class Profile {
     //{"total_miles": 0.0, "team_name": "", "last_name": "lastName", "first_name": "firstName", "ID": "ID123"}
 
+   // private static final long serialVersionUID = 1L;
     public int totalMiles;
 
     public String teamName;
