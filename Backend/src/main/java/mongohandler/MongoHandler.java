@@ -5,6 +5,7 @@ import beans.Profile;
 import beans.Team;
 import beans.TeamID;
 import com.mongodb.BasicDBList;
+import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -42,7 +43,7 @@ public class MongoHandler implements MongoOperator {
     }
 
     @Override
-    public boolean exists(AccountID account) {
+    public boolean exists(AccountID account) throws MongoException{
 
         MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
         MongoCollection<Document> collection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
@@ -56,7 +57,7 @@ public class MongoHandler implements MongoOperator {
     }
 
     @Override
-    public void populateProfile(Profile profile) {
+    public void populateProfile(Profile profile) throws MongoException{
         MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
         MongoCollection<Document> collection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
 
@@ -68,7 +69,7 @@ public class MongoHandler implements MongoOperator {
     }
 
     @Override
-    public void populateTeam(Team team) {
+    public void populateTeam(Team team) throws MongoException{
         MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
         MongoCollection<Document> collection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
 
@@ -85,7 +86,7 @@ public class MongoHandler implements MongoOperator {
     }
 
     @Override
-    public Team getTeam(TeamID teamID) {
+    public Team getTeam(TeamID teamID)  throws MongoException{
         MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
         MongoCollection<Document> collection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
         FindIterable<Document> found = collection.find(eq(MongoConstants.TEAM_ID_FIELD, teamID.getTeamID()));
@@ -109,14 +110,14 @@ public class MongoHandler implements MongoOperator {
     }
 
     @Override
-    public Profile getProfile(AccountID accountID) {
+    public Profile getProfile(AccountID accountID) throws MongoException{
 
 
         return null;
     }
 
     @Override
-    public void addTeamMember(Team team, Profile newTeamMember) {
+    public void addTeamMember(Team team, Profile newTeamMember) throws MongoException{
 
     }
 

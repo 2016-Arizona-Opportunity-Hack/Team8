@@ -4,6 +4,7 @@ import beans.Profile;
 import beans.Team;
 import beans.AccountID;
 import beans.TeamID;
+import com.mongodb.Mongo;
 
 import java.util.List;
 
@@ -12,15 +13,15 @@ import java.util.List;
  */
 public interface MongoOperator {
 
-    boolean exists (AccountID account);
+    boolean exists (AccountID account) throws MongoException;
 
-    void populateProfile(Profile profile);
+    void populateProfile(Profile profile) throws MongoException;
 
-    void populateTeam(Team team);
+    void populateTeam(Team team) throws MongoException;
 
-    Team getTeam(TeamID teamID);
+    Team getTeam(TeamID teamID) throws MongoException;
 
-    Profile getProfile(AccountID accountID);
+    Profile getProfile(AccountID accountID) throws MongoException;
 
-    void addTeamMember(Team team, Profile newTeamMember);
+    void addTeamMember(Team team, Profile newTeamMember) throws MongoException;
 }
