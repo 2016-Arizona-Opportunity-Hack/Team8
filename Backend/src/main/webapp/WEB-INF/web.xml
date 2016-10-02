@@ -9,6 +9,7 @@
             <param-value>gallentserver</param-value>
         </init-param>
 
+
         <!-- the following is only needed if you want to use the built-in support
         for mapping pojo objects to json.  Because i am using jaxb annotation, i will
         disable the pojo mapping feature -->
