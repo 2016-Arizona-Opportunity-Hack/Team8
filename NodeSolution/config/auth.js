@@ -19,7 +19,7 @@ module.exports = {
         'clientID'         : '642172236840-98o3q633iuq0vlum8k3ldcppnjgs2duh.apps.googleusercontent.com',
         'clientSecret'     : '4w0-LByzDyyLIYeK84GfBBLn',
         'callbackURL'      : 'http://localhost:8088/auth/google/callback'
-    }
+    },
     'apiAuth' : {
       'callbackURL'        : 'http://10.143.186.63:8080/Backend/rest'
     }
