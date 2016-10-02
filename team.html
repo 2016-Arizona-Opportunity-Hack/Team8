@@ -27,6 +27,9 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script src="js/jquery.js"></script>
+    <script src="js/Chart.min.js"></script>
+
 </head>
 
 <body>
@@ -76,6 +79,42 @@
         </div>
         <!-- /.row -->
 
+        <canvas id="canvas" width="400" height="100"></canvas>
+        <script>
+            var ctx = document.getElementById("canvas");
+
+            var data = {
+                labels: ["You", "Teammate 1", "Teammate 2"],
+                datasets: [
+                    {
+                        backgroundColor: [
+                            'rgba(253,195,14, 0.2)',
+                            'rgba(253,195,24, 0.2)',
+                            'rgba(253,195,34, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(253,195,25,1)',
+                            'rgba(253,195,35,1)',
+                            'rgba(253,195,45,1)'
+                        ],
+                        borderWidth: 1,
+                        data: [25, 35, 45]
+                    }
+                ]
+            };
+            var canvas = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: data,
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false
+                    }
+                }
+
+            });
+
+        </script>
         <!-- Footer -->
         <footer>
             <div class="row">
