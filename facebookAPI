@@ -1,0 +1,22 @@
+<?php
+$fb = new Facebook\Facebook([
+  'app_id' => '928735997231583',
+'app_secret' => 'ea565d48cf38ac2ecc1f714ef1642a8c',
+'default_graph_version' => 'v2.7',
+]);
+
+try {
+// Returns a `Facebook\FacebookResponse` object
+$response = $fb->get('/me?fields=id,name,email', '{access-token}');
+} catch(Facebook\Exceptions\FacebookResponseException $e) {
+echo 'Graph returned an error: ' . $e->getMessage();
+exit;
+} catch(Facebook\Exceptions\FacebookSDKException $e) {
+echo 'Facebook SDK returned an error: ' . $e->getMessage();
+exit;
+}
+
+$user = $response->getGraphUser();
+
+echo 'Name: ' . $user['name'];
+?>
