@@ -46,6 +46,16 @@
         // for FB.getLoginStatus().
         if (response.status === 'connected') {
             // Logged into your app and Facebook.
+
+            var userEmail = FB.api('/me?fields=email', function() {
+                console.log('stored email')});
+
+            var firstName = FB.api('/me?fields=first_name', function() {
+                console.log('stored first name')});
+
+            var lastName = FB.api('/me?fields=last_name', function() {
+                console.log('stored last name')});
+
             testAPI();
         } else if (response.status === 'not_authorized') {
             // The person is logged into Facebook, but not your app.
@@ -107,15 +117,6 @@
 
     // Here we run a very simple test of the Graph API after login is
     // successful.  See statusChangeCallback() for when this call is made.
-
-    var userEmail = FB.api('/me?fields=email', function() {
-        console.log('stored email')});
-
-    var firstName = FB.api('/me?fields=first_name', function() {
-        console.log('stored first name')});
-
-    var lastName = FB.api('/me?fields=last_name', function() {
-        console.log('stored last name')});
 
     function testAPI() {
         console.log('Welcome!  Fetching your information.... ');
