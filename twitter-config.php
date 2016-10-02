@@ -16,7 +16,7 @@ define( 'DB_NAME', 'user_login');
 //Twitter login
 define('TWITTER_CONSUMER_KEY', 'JqXTytyqpfEd72RiqzgCCoXVK');
 define('TWITTER_CONSUMER_SECRET', 'f4RQNkB3h0YofvgCsiT6Fs8cEesdxyFQ7oi1WHYo3JmEh6leAf');
-define('TWITTER_OAUTH_CALLBACK', 'http://localhost8080');
+define('TWITTER_OAUTH_CALLBACK', 'https://opportunity-hack-2016-az.github.io/Team8/profile.html');
 
 function __autoload($class)
 {
