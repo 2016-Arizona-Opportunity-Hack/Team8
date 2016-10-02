@@ -67,19 +67,21 @@
             statusChangeCallback(response);
         });
     }
+   /* FB.api(
+            '/me',
+            'GET',
+            {"fields":"email"},
+            function(response) {
+
+            }
+    );*/
     function retrieveUserInfo() {
-        FB.api(
-                '/me',
-                'GET',
-                {"fields":"email"},
-                function(response) {
-                    FB.getLoginStatus(function(response) {
-                        if (response.status === 'connected') {
-                            var accessToken = response.authResponse.accessToken;
-                        }
-                    } );
-                }
-        );
+        FB.getLoginStatus(function(response) {
+            if (response.status === 'connected') {
+                var accessToken = response.authResponse.accessToken;
+            }
+        });
+
     }
 
     window.fbAsyncInit = function () {
