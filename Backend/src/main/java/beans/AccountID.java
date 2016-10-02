@@ -7,6 +7,13 @@ public class AccountID {
 
     public String accountID;
 
+    public AccountID(){}
+
+    public AccountID(String accountID){
+
+        this.accountID = accountID;
+    }
+
     public String getAccountID(){
         return this.accountID;
     }

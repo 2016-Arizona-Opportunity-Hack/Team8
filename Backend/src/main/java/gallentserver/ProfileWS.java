@@ -29,7 +29,7 @@ public class ProfileWS {
 
         System.out.println("account ID " + accountId);
 
-        AccountID accountID = new AccountID();
+        AccountID accountID = new AccountID(accountId);
         accountID.setAccountID(accountId);
 
         Profile profile = mongoOperator.getProfile(accountID);

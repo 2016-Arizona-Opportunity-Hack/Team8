@@ -1,5 +1,6 @@
 package gallentserver;
 import beans.AccountID;
+import beans.Profile;
 import beans.Team;
 import mongohandler.MongoException;
 import mongohandler.MongoHandler;
@@ -49,19 +50,21 @@ public class LoginWS {
         }
 
         System.out.println("Data Received: " + crunchifyBuilder.toString());
-        String callStatus = "success";
+        String callStatus = "";
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            AccountID accountID = mapper.readValue(crunchifyBuilder.toString(), AccountID.class);
+            Profile profile = mapper.readValue(crunchifyBuilder.toString(), Profile.class);
+
+            AccountID accountID = new AccountID(profile.getId());
             if(!mongoOperator.exists(accountID)){
 
-                mongoOperator.populateProfile(mongoOperator.getProfile(accountID));
+                mongoOperator.populateProfile(profile);
             }else{
 
-                //do nothing
+                profile = mongoOperator.getProfile(accountID);
             }
-
+            callStatus = mapper.writeValueAsString(profile);
 
         }  catch (JsonParseException e) {
 
@@ -77,15 +80,8 @@ public class LoginWS {
             e.printStackTrace();
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        String errorJson = "";
-        try {
-            Error error = mapper.readValue(callStatus, Error.class);
-            errorJson = mapper.writeValueAsString(error);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return errorJson;
+
+        return callStatus;
 
     }
 }
