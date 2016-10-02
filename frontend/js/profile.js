@@ -6,13 +6,19 @@ var profileName = 'NA' // Need to get it from FB
 function getData(profileName, callback){
     // To be used later for API call
     // callServer('profile', data, callback)
-    callback(JSON.parse(dummyJSON))
+    callback({'data':JSON.parse(dummyJSON), 'status':200})
 }
 
 function populatePage(data){
-  populateFields(data)
-  $('h1').html(data.first_name + ' ' + data.last_name)
+  if(data.status == 200){
+    populateFields(data.data)
+    $('h1').html(data.data.first_name + ' ' + data.data.last_name)
+  }
+
 }
 
+function logMiles(){
+
+}
 
 getData(profileName, populatePage)

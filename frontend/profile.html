@@ -92,7 +92,7 @@
         <div class="col-lg-12">
             <h2 class="page-header">Log Miles</h2>
 
-            <form action="action.php" method="post">
+            <form id = "logMiles" onSubmit="return logMiles()" method="post">
                 <p>Miles: <input type="number" pattern="[0-9]" name="miles"/></p>
                 <p>Activity:
                     <select id="exercise">
