@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  See: http://docs.oracle.com/cd/E28613_01/web.1211/b65890/web_xml.htm
+-->
+<web-app>
+    <display-name>GallantWS</display-name>
+    <servlet>
+        <servlet-name>Jersey</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>ws</param-value>
+
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Jersey</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+</web-app>
