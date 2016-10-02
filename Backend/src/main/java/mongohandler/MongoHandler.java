@@ -10,9 +10,11 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import org.bson.Document;
 import static com.mongodb.client.model.Filters.*;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -111,9 +113,22 @@ public class MongoHandler implements MongoOperator {
 
     @Override
     public Profile getProfile(AccountID accountID) throws MongoException{
+        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
+        MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        MongoIterable<Document> foundProfiles = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID()));
+        Iterator<Document> foundProfilesIterator = foundProfiles.iterator();
+        if (foundProfilesIterator.hasNext()){
+            Document foundDocument = foundProfilesIterator.next();
+            Profile requestedProfile = new Profile();
+            requestedProfile.setFirstName(foundDocument.getString(MongoConstants.FIRST_NAME_FIELD));
+            requestedProfile.setLastName(foundDocument.getString(MongoConstants.LAST_NAME_FIELD));
+            requestedProfile.setTotalMiles(foundDocument.getInteger(MongoConstants.TOTAL_MILES_FIELD));
+            requestedProfile.setId(foundDocument.getString(MongoConstants.ACCOUNT_ID_FIELD));
+            return requestedProfile;
+        }
+        throw new MongoException("Could not find account with account id" + accountID.getAccountID());
 
 
-        return null;
     }
 
     @Override
