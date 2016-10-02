@@ -74,7 +74,11 @@
                 'GET',
                 {"fields":"email"},
                 function(response) {
-                    FB.getAuthResponse();
+                    FB.getLoginStatus(function(response) {
+                        if (response.status === 'connected') {
+                            var accessToken = response.authResponse.accessToken;
+                        }
+                    } );
                 }
         );
         FB.init({
