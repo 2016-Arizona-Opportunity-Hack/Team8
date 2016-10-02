@@ -52,7 +52,9 @@ public class LogMilesWS {
         }
 
         System.out.println("Data Received: " + crunchifyBuilder.toString());
-        String callStatus = "";
+        String callStatus = "{\n" +
+                "  \"status\": \"success\"\n" +
+                "}";
 
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -64,13 +66,19 @@ public class LogMilesWS {
 
             e.printStackTrace();
         } catch (JsonMappingException e) {
-            callStatus = "jsonError";
+            callStatus = "{\n" +
+                    "  \"status\": \"jsonError\"\n" +
+                    "}";;
             e.printStackTrace();
         } catch (IOException e) {
-            callStatus = "IOError";
+            callStatus = "{\n" +
+                    "  \"status\": \"ioError\"\n" +
+                    "}";
             e.printStackTrace();
         } catch (MongoException e) {
-            callStatus = "mongoError";
+            callStatus = "{\n" +
+                    "  \"status\": \"mongoError\"\n" +
+                    "}";
             e.printStackTrace();
         }
 
