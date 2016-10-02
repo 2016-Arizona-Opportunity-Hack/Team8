@@ -25,7 +25,11 @@
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
     <![endif]-->
+    <script src="js/jquery.js"></script>
+    <script src="js/Chart.min.js"></script>
+
 
 </head>
 
@@ -72,13 +76,9 @@
             cookie: true,  // enable cookies to allow the server to access
                            // the session
             xfbml: true,  // parse social plugins on this page
-            version: 'v2.5', // use graph api version 2.5
-            status: false
+            version: 'v2.7' // use graph api version 2.7
         });
-        FB.login(function (response) {
-            // Handle the response object, like in statusChangeCallback() in our demo
-            // code.
-        });
+
         // Now that we've initialized the JavaScript SDK, we call
         // FB.getLoginStatus().  This function gets the state of the
         // person visiting this page and can return one of three states to
@@ -109,10 +109,11 @@
 
     // Here we run a very simple test of the Graph API after login is
     // successful.  See statusChangeCallback() for when this call is made.
+
     function testAPI() {
         console.log('Welcome!  Fetching your information.... ');
-        FB.api('/me', function (response) {
-            console.log('Successful login for: ' + response.name);
+        FB.api('/me?fields=name,email', function (response) {
+            console.log('Successful login for: ' + response.name + ' at ' + response.email + " at " + response.picture);
             document.getElementById('status').innerHTML =
                     'Thanks for logging in, ' + response.name + '!';
         });
@@ -160,23 +161,79 @@
     <!-- Page Heading/Breadcrumbs -->
     <div class="row">
         <div class="col-lg-12">
+
+            <p id="demo"></p>
+            <!-- Grab Profiles -->
+            <script>
+
+                var text = "profile.json";
+                var obj = JSON.parse(text);
+
+                document.getElementById("demo").innerHTML =
+                        obj.total_miles + "<br>" +
+                        obj.team_name + "<br>" +
+                        obj.last_name + "<br>" +
+                        obj.first_name + "<br>" +
+                        obj.ID + "<br>";
+            </script>
+
             <h1 class="page-header">Your Profile
                 <small>Your Name</small>
-                <div align="right" class="fb-login-button" data-max-rows="5" data-size="large" data-show-faces="false"
-                                             data-auto-logout-link="true"></div>
+
             </h1>
+
+            <div onclick="facebookLogin" align="right" class="fb-login-button" data-max-rows="5" data-size="large"
+                 data-show-faces="false"
+                 data-auto-logout-link="true">
+
+            </div>
 
         </div>
     </div>
     <!-- /.row -->
+    <canvas id="canvas" width="400" height="100"></canvas>
+    <script>
+        var ctx = document.getElementById("canvas");
 
-    <!-- Intro Content -->
-    <div class="row">
+        var data = {
+            labels: ["You"],
+            datasets: [
+                {
+                    backgroundColor: [
+                        'rgba(253,195,14, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(253,195,25,1)'
+                    ],
+                    borderWidth: 1,
+                    data: [400]
+                }
+            ]
+        };
+        var canvas = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: data,
+            options: {
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true,    // minimum will be 0, unless there is a lower value.
+                            max: 565,
+                        }
+                    }]
+                },
+                responsive: true,
+                legend: {
+                    display: false
+                }
+            }
 
-    </div>
-    <!-- /.row -->
+        });
 
-    <!-- Team Members -->
+    </script>
+
+    <!-- Log Miles -->
     <div class="row">
         <div class="col-lg-12">
             <h2 class="page-header">Log Miles</h2>
