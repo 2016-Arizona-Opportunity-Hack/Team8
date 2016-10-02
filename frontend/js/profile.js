@@ -1,13 +1,7 @@
 // This code loads and populate profile.html
 
-var dummyJSON = '{"total_miles": 0.0, "team_name": "", "last_name": "Doe", "first_name": "John", "ID": "ID123"}'
-var profileName = 'NA' // Need to get it from FB
-
-function getData(profileName, callback){
-    // To be used later for API call
-    // callServer('profile', data, callback)
-    callback({'data':JSON.parse(dummyJSON), 'status':200})
-}
+var dummyJSON = '{"total_miles": 0.0, "team_name": "TiredFew", "last_name": "Doe", "first_name": "John", "ID": "TiredFew"}'
+var profileName = 'NA' // need form FB
 
 function populatePage(data){
   if(data.status == 200){
