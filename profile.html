@@ -25,7 +25,10 @@
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="js/jquery.js"></script>
     <![endif]-->
+
+    <script src="js/Chart.min.js"></script>
 
 </head>
 
@@ -163,8 +166,8 @@
             <p id="demo"> </p>
             <!-- Grab Profiles -->
             <script>
-                var text = "profile.json";
 
+                var text = "profile.json";
                 var obj = JSON.parse(text);
 
                 document.getElementById("demo").innerHTML =
@@ -184,6 +187,40 @@
         </div>
     </div>
     <!-- /.row -->
+
+
+    <canvas id="canvas" width="400" height="100"></canvas>
+    <script>
+        var ctx = document.getElementById("canvas");
+
+        var data = {
+            labels: ["You"],
+            datasets: [
+                {
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)'
+                    ],
+                    borderWidth: 1,
+                    data: [565]
+                }
+            ]
+        };
+        var canvas = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: data,
+            options: {
+                responsive: true,
+                legend: {
+                    display: false
+                }
+            }
+
+        });
+
+    </script>
 
     <!-- Intro Content -->
     <div class="row">
