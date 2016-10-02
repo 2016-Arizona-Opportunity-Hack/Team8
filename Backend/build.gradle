@@ -1,17 +1,17 @@
-group 'OpportunityHack'
-version '1.0-SNAPSHOT'
+//group 'OpportunityHack'
+//version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'war'
 
-sourceCompatibility = 1.8
+//sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'org.apache.tomcat:tomcat-catalina:7.0.47'
+   // compile 'org.apache.tomcat:tomcat-catalina:7.0.47'
     compile 'org.mongodb:mongo-java-driver:3.3.0'
     compile "javax.ws.rs:jsr311-api:1.1.1"
 
