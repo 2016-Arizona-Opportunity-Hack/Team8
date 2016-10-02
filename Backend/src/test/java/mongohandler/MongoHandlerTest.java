@@ -3,6 +3,7 @@ package mongohandler;
 
 import beans.AccountID;
 import beans.Profile;
+import com.mongodb.BasicDBList;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -46,6 +47,36 @@ public class MongoHandlerTest{
         while(dbIterator.hasNext()){
             System.out.println(dbIterator.next());
         }
+
+        Document testProfile1 = new Document(MongoConstants.FIRST_NAME_FIELD, "TEST")
+                .append(MongoConstants.LAST_NAME_FIELD, "PROFILE")
+                .append(MongoConstants.TEAM_ID_FIELD, "TEST_TEAM")
+                .append(MongoConstants.TOTAL_MILES_FIELD, 100)
+                .append(MongoConstants.ACCOUNT_ID_FIELD, "test@test.com");
+
+        Document testProfile2 = new Document(MongoConstants.FIRST_NAME_FIELD, "TEST")
+                .append(MongoConstants.LAST_NAME_FIELD, "PROFILE2")
+                .append(MongoConstants.TEAM_ID_FIELD, "TEST_TEAM")
+                .append(MongoConstants.TOTAL_MILES_FIELD, 50)
+                .append(MongoConstants.ACCOUNT_ID_FIELD, "test2@test.com");
+
+        MongoCollection<Document> profileCollection = mongoDatabase.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        profileCollection.insertOne(testProfile1);
+        profileCollection.insertOne(testProfile2);
+
+
+        BasicDBList list = new BasicDBList();
+        list.add("test@test.com");
+        list.add("test2@test.com");
+
+
+        Document doc = new Document(MongoConstants.TEAM_ID_FIELD, "TEST_TEAM")
+                .append(MongoConstants.TEAM_MEMBERS_FIELD, list);
+
+        MongoCollection<Document> teamCollection = mongoDatabase.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
+        teamCollection.insertOne(doc);
+
+
     }
 
     @Test
