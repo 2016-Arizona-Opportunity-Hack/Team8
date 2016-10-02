@@ -3,6 +3,8 @@ package mongohandler;
 import beans.Profile;
 import beans.Team;
 import beans.AccountID;
+import beans.TeamID;
+import com.mongodb.Mongo;
 
 import java.util.List;
 
@@ -11,15 +13,15 @@ import java.util.List;
  */
 public interface MongoOperator {
 
-    boolean exists (AccountID account);
+    boolean exists (AccountID account) throws MongoException;
 
-    void populateProfile(Profile profile);
+    void populateProfile(Profile profile) throws MongoException;
 
-    void populateTeam(Team team);
+    void populateTeam(Team team) throws MongoException;
 
-    void getProfilesWithIDs(List<AccountID> accountIDs);
+    Team getTeam(TeamID teamID) throws MongoException;
 
-    void getProfiles(List<Profile> profiles);
+    Profile getProfile(AccountID accountID) throws MongoException;
 
-    void addTeamMember(Team team, Profile newTeamMember);
+    void addTeamMember(Team team, Profile newTeamMember) throws MongoException;
 }
