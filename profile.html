@@ -94,10 +94,9 @@
             status: false
         });
         function facebookLogin() {
-            FB.login(function (response) {
-                // Handle the response object, like in statusChangeCallback() in our demo
-                // code.
-            });
+            FB.login(function(){FB.api('/me/feed', 'post', {message: 'Hello, world!'});}, {scope: 'publish_actions'});
+
+        }
             // Now that we've initialized the JavaScript SDK, we call
             // FB.getLoginStatus().  This function gets the state of the
             // person visiting this page and can return one of three states to
@@ -211,7 +210,7 @@
     </div>
     <!-- /.row -->
     <div class="facebook">
-        <?php include 'facebookAPI.php'; ?>
+        <?php include 'facebookAPI.php';?>
     </div>
 
     <canvas id="canvas" width="400" height="100"></canvas>
