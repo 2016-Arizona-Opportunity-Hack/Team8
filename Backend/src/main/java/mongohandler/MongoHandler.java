@@ -1,9 +1,6 @@
 package mongohandler;
 
-import beans.AccountID;
-import beans.Profile;
-import beans.Team;
-import beans.TeamID;
+import beans.*;
 import com.mongodb.BasicDBList;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
@@ -133,6 +130,67 @@ public class MongoHandler implements MongoOperator {
 
     @Override
     public void addTeamMember(Team team, Profile newTeamMember) throws MongoException{
+
+    }
+
+    @Override
+    public void logMiles(AccountID accountID, LoggedMiles miles) throws MongoException {
+        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
+        MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        Iterator<Document> foundProfilesIterator = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID())).iterator();
+        if (foundProfilesIterator.hasNext()){
+            Document doc = foundProfilesIterator.next();
+            int totalMiles = doc.getInteger(MongoConstants.TOTAL_MILES_FIELD);
+            totalMiles += miles.getMiles();
+            doc.put(MongoConstants.TOTAL_MILES_FIELD, totalMiles);
+            // Update users total count
+            profileCollection.insertOne(doc);
+            // Add a new miles log to collection
+            addMilesLogToMilesCollection(miles);
+
+
+        }
+    }
+
+    void addMilesLogToMilesCollection(LoggedMiles miles){
+        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
+        MongoCollection<Document> loggedMilesCollection = database.getCollection(MongoConstants.LOGGED_MILES_COLLECTION_NAME);
+        Document doc = new Document(MongoConstants.ACCOUNT_ID_FIELD, miles.accountId)
+                .append(MongoConstants.MILES_FIELD, miles.getMiles())
+                .append(MongoConstants.DATE_FIELD, miles.getDate());
+        loggedMilesCollection.insertOne(doc);
+    }
+
+    @Override
+    public int getTeamMiles(TeamID teamID) throws MongoException {
+        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
+        MongoCollection<Document> teamCollection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
+        Iterator<Document> teamIterator = teamCollection.find(eq(MongoConstants.TEAM_ID_FIELD, teamID.getTeamID())).iterator();
+        if (teamIterator.hasNext()){
+            Document doc = teamIterator.next();
+            BasicDBList teamMembers = (BasicDBList)doc.get(MongoConstants.TEAM_MEMBERS_FIELD);
+            int teamMiles = 0;
+            for (Object account : teamMembers){
+                AccountID accountID = new AccountID((String)account);
+                teamMiles += getProfileTotalMiles(accountID);
+            }
+            return teamMiles;
+
+        }
+        throw new MongoException("A problem occured while getting team data");
+
+
+    }
+
+    int getProfileTotalMiles(AccountID accountID) throws MongoException{
+        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
+        MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        Iterator<Document> searchResult = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID())).iterator();
+        if (searchResult.hasNext()){
+            Document foundDoc = searchResult.next();
+            return foundDoc.getInteger(MongoConstants.TOTAL_MILES_FIELD);
+        }
+        throw new MongoException("A problem occured while getting miles for account " + accountID);
 
     }
 

@@ -24,5 +24,5 @@ public interface MongoOperator {
 
     void logMiles(AccountID accountID, LoggedMiles miles) throws MongoException;
 
-    void getTeamMiles(TeamID teamID) throws MongoException;
+    int getTeamMiles(TeamID teamID) throws MongoException;
 }

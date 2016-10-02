@@ -6,6 +6,7 @@ package mongohandler;
 public class MongoConstants {
     static final String PROFILE_COLLECTION_NAME = "Profile";
     static final String TEAM_COLLECTION_NAME = "Team";
+    static final String LOGGED_MILES_COLLECTION_NAME = "LoggedMiles";
     static final String DATABASE_NAME = "GALENT_FEW_MARATHON";
 
     static final String DEFAULT_HOSTNAME = "10.143.192.182";
@@ -20,6 +21,11 @@ public class MongoConstants {
     // Team Bean fields
     static final String TEAM_ID_FIELD = "TeamID";
     static final String TEAM_MEMBERS_FIELD = "TeamMembers";
+
+    // LoggedMiles Bean Fields
+    static final String ACTIVITY_FIELD = "Activity";
+    static final String MILES_FIELD = "Miles";
+    static final String DATE_FIELD = "Date";
 
 
 }
