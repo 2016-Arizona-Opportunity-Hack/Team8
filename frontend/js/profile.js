@@ -17,8 +17,14 @@ function populatePage(data){
 
 }
 
-function logMiles(){
+function requestResponse(data){
+  console.log('server responded with:'+ data.status);
+}
 
+function logMiles(){
+    miles = $('#logMiles p input').val()
+    activity = $('#logMiles p select').val()
+    callServer('logmiles', {'miles':miles, 'activity': activity}, requestResponse)
 }
 
 getData(profileName, populatePage)

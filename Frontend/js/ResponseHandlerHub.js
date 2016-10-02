@@ -23,12 +23,17 @@ function formatString(type){
       return apiEndPoint + '/team'
   } else if (type == 'login'){
       return apiEndPoint + '/login'
+  } else if (type == 'logmiles'){
+      return apiEndPoint + '/logmiles'
   }
 }
 
 function callServer(type, variables, callback){
     url = formatString(type);
-    httpGetAsync(url, callback, 'get', variables)
-
+    if(type == 'logMiles'){
+        httpGetAsync(url, callback, 'post', variables)
+    } else {
+        httpGetAsync(url, callback, 'get', variables)
+    }
 
 }
