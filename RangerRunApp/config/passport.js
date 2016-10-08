@@ -2,6 +2,8 @@
 
 // load all the things we need
 var LocalStrategy   = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
+var configAuth = require('./auth');
 
 // load up the user model
 // var User       		= require('../app/models/user');
@@ -108,4 +110,21 @@ module.exports = function(passport) {
 
     }));
 
+    // =========================================================================
+    // FACEBOOK LOGIN ==========================================================
+    // =========================================================================
+    passport.use('facebook', new FacebookStrategy({
+      clientID        : configAuth.facebookAuth.clientID,
+      clientSecret    : configAuth.facebookAuth.clientSecret,
+      callbackURL     : configAuth.facebookAuth.callbackURL
+    },
+    function(token, refreshToken, profile, done){
+      process.nextTick(function(){
+        console.log("token: " + token);
+        console.log("refreshToken: " + refreshToken);
+        console.log("profile: " + profile);
+
+        return done(null, {"id": profile.id});
+      });
+    }))
 };
