@@ -1,0 +1,84 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Run Ranger Run</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Gallant Few</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li><a href="#">Team Management</a></li>
+				<li><a href="#">Profile Settings</a><li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+			</ul>
+		<!-- End of container for nav -->
+		</div>
+	</nav>
+
+	<div class="container">
+		<div class="page-header text-center">
+			<h1><span class="fa fa-anchor"></span> Run Ranger Run</h1>
+		</div>
+		<div class="row">
+			<!-- LOCAL INFORMATION -->
+			<div class="col-lg-6 well">
+				<h3 class="text-center"> Log your miles</h3>
+		    <form>
+		      <div class="form-group">
+		        <label for="activity-input">Activity</label>
+		        <input type="text" class="form-control" id="activity-input">
+		      </div>
+		      <div class="form-group">
+		        <label for="miles-input">Miles</label>
+		        <input type="number" class="form-control" id="miles-input" value="0" min="0">
+		      </div>
+		      <div class="form-group">
+		        <input type="submit" class="form-control" value="Submtit" >
+		      </div>
+		    </form>
+		  </div>
+				<div class="col-lg-6">
+					<h3 class="text-center"> Your Team <br> <small> TEAM NAME</small></h3>
+					<table class="table table-boarder">
+						<thead>
+							<tr>
+								<th>Position</th>
+								<th> Name </th>
+								<th> Miles </th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td> 1 </td>
+								<td> Nick </td>
+								<td> 10 </td>
+							</tr>
+							<tr>
+								<td> 2 </td>
+								<td> Bob </td>
+								<td> 5 </td>
+							</tr>
+							<tr>
+								<td> 3 </td>
+								<td> Mike </td>
+								<td> 1 </td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
