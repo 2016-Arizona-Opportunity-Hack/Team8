@@ -10,32 +10,8 @@ import beans.AuthBeans.TwitterAuth;
  *
  *
  *
- {
- facebook         : {
- id           : "",
- token        : "",
- email        : "",
- name         : ""
- },
- twitter          : {
- id           : "",
- token        : "",
- displayName  : "",
- username     : ""
- },
- google           : {
- id           : "",
- token        : "",
- email        : "",
- name         : ""
- },
- rangerID : "12345"
- }
  */
 public class Profile {
-    //{"total_miles": 0.0, "team_name": "", "last_name": "lastName", "first_name": "firstName", "ID": "ID123"}
-
-   // private static final long serialVersionUID = 1L;
     public int totalMiles;
     public String teamName;
     public String name;
