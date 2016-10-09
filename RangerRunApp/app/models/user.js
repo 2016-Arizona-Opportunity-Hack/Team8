@@ -22,7 +22,9 @@ module.exports = function User() {
           email        : "",
           name         : ""
       },
-      rangerID : "12345"
+      rangerID : "12345",
+      totalMiles : 0,
+      teamName : ""
   }
 }
 
