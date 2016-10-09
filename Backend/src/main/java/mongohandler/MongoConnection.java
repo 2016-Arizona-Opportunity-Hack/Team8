@@ -20,7 +20,7 @@ public class MongoConnection {
 
 
     // Has only package level permissions because it should only be used in testing
-    static MongoClient getClient(String hostname, int port){
+    static MongoClient getMongoClient(String hostname, int port){
         if (client == null){
             new MongoConnection(hostname, port);
         }

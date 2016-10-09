@@ -21,25 +21,30 @@ import java.util.List;
  */
 public class MongoHandler implements MongoOperator {
 
-    public MongoClient client;
-    public MongoDatabase database;
+    MongoClient client;
+    MongoDatabase database;
+    MongoCollection<Document> profileCollection;
+    MongoCollection<Document> teamCollection;
+    MongoCollection<Document> activityCollection;
 
     /**
      * Defining the constructors for the client
      */
     public MongoHandler() {
-        client = new MongoClient(MongoConstants.DEFAULT_HOSTNAME, MongoConstants.DEFAULT_PORT);
-        client.getDatabase(MongoConstants.DATABASE_NAME);
+        this(MongoConstants.DEFAULT_HOSTNAME, MongoConstants.DEFAULT_PORT);
+
     }
 
     public MongoHandler(String hostname) {
-        client = new MongoClient(hostname);
-        client.getDatabase(MongoConstants.DATABASE_NAME);
+        this(hostname, MongoConstants.DEFAULT_PORT);
     }
 
     public MongoHandler(String hostname, int port) {
-        client = new MongoClient(hostname, port);
-        client.getDatabase(MongoConstants.DATABASE_NAME);
+        client = MongoConnection.getMongoClient(hostname, port);
+        database = client.getDatabase(MongoConstants.DATABASE_NAME);
+        profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        teamCollection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
+        activityCollection = database.getCollection(MongoConstants.ACTIVITY_COLLECTION_NAME);
     }
 
     @Override

@@ -6,7 +6,7 @@ package mongohandler;
 public class MongoConstants {
     static final String PROFILE_COLLECTION_NAME = "Profile";
     static final String TEAM_COLLECTION_NAME = "Team";
-    static final String LOGGED_MILES_COLLECTION_NAME = "LoggedMiles";
+    static final String ACTIVITY_COLLECTION_NAME = "Acctivities";
     static final String DATABASE_NAME = "GALENT_FEW_MARATHON";
 
     static final String DEFAULT_HOSTNAME = "10.143.192.182";
