@@ -24,6 +24,7 @@ module.exports = function User() {
       },
       rangerID : "12345",
       totalMiles : 0,
+      name: "",
       teamName : ""
   }
 }

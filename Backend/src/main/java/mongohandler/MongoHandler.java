@@ -10,6 +10,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
+import com.sun.research.ws.wadl.Doc;
 import org.bson.Document;
 import static com.mongodb.client.model.Filters.*;
 
@@ -68,7 +69,7 @@ public class MongoHandler implements MongoOperator {
     @Override
     public Profile getProfile(FacebookAuth facebook) throws MongoException {
         FindIterable<Document> existingProfiles = profileCollection.find(
-                new Document("authorizations.service", "facebook").append("authorizations.Id", facebook.getId())
+                new Document("authorizations.facebook.id", facebook.getId())
         );
         Iterator<Document> facebookProfile = existingProfiles.iterator();
         // If at least one profile was found
@@ -99,7 +100,7 @@ public class MongoHandler implements MongoOperator {
     @Override
     public Profile getProfile(GoogleAuth google) throws MongoException {
         FindIterable<Document> existingProfiles = profileCollection.find(
-                new Document("authorizations.service", "google").append("authorizations.Id", google.getId())
+                new Document("authorizations.google.id", google.getId())
         );
         Iterator<Document> facebookProfile = existingProfiles.iterator();
         // If at least one profile was found
@@ -130,7 +131,7 @@ public class MongoHandler implements MongoOperator {
     @Override
     public Profile getProfile(TwitterAuth twitter) throws MongoException {
         FindIterable<Document> existingProfiles = profileCollection.find(
-                new Document("authorizations.service", "google").append("authorizations.Id", twitter.getId())
+                new Document("authorizations.twitter", twitter.getId())
         );
         Iterator<Document> facebookProfile = existingProfiles.iterator();
         // If at least one profile was found
@@ -271,25 +272,73 @@ public class MongoHandler implements MongoOperator {
     // HELPER METHODS
     // =================================================================================================================
 
+    Document getNewProfile(){
+
+        // Top level profile
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("totalMiles", 0);
+        profile.put("name", "");
+        profile.put("teamName", "");
+
+        // Create facebook object
+        Map<String, Object> facebookAuth = new HashMap<>();
+        facebookAuth.put("id", "");
+        facebookAuth.put("token", "");
+        facebookAuth.put("email", "");
+        facebookAuth.put("name", "");
+
+        // Create Google Object
+        Map<String, Object>googleAuth = new HashMap<>();
+        googleAuth.put("id", "");
+        googleAuth.put("token", "");
+        googleAuth.put("email", "");
+        googleAuth.put("name", "");
+
+        // Create Twitter Object
+        Map<String, Object>twitterAuth = new HashMap<>();
+        twitterAuth.put("id", "");
+        twitterAuth.put("token", "");
+        twitterAuth.put("displayName", "");
+        twitterAuth.put("username", "");
+
+        // Create a new document to hold each of the authentication docs
+        Document authorizations = new Document("facebook", facebookAuth)
+                .append("google", googleAuth)
+                .append("twitter", twitterAuth);
+        profile.put("authorizations", authorizations);
+
+        return new Document(profile);
+
+
+    }
+
     Profile convertToProfile(Document doc){
 
     }
 
     Profile createProfileFromAuth(FacebookAuth auth) throws MongoException{
-        Map<String, Object> profileObj = new HashMap<>();
-        profileObj.put("totalMiles", 0);
-        profileObj.put("teamName", "");
-        profileObj.put("Authorizations",)
-        new Document(profileObj);
+        Document facebookInitial = getNewProfile();
+        Document facebookAuth = (Document)facebookInitial.get("authorizations.facebook");
+        facebookAuth.replace("id", auth.getId());
+        facebookAuth.replace("token", auth.getToken());
+        facebookAuth.replace("email", auth.getEmail());
+        facebookAuth.replace("name", auth.getName());
+        facebookAuth.replace("name", auth.getName());
+
+        return convertToProfile(facebookInitial);
 
     }
-    
+
+    //TODO: Implement
     Profile createProfileFromAuth(GoogleAuth auth) throws MongoException {
+        return null;
         
     }
-    
+
+    // TODO: Implement
     Profile createProfileFromAuth(TwitterAuth auth) throws MongoException {
-        
+        return null;
+
     }
 
     int getProfileTotalMiles(AccountID accountID) throws MongoException{
