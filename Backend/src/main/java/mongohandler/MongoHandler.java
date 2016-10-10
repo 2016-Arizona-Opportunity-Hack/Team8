@@ -1,20 +1,19 @@
 package mongohandler;
 
 import beans.*;
+import beans.AuthBeans.FacebookAuth;
+import beans.AuthBeans.GoogleAuth;
+import beans.AuthBeans.TwitterAuth;
 import com.mongodb.BasicDBList;
-import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
-import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import static com.mongodb.client.model.Filters.*;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by nick on 10/1/16.
@@ -47,30 +46,127 @@ public class MongoHandler implements MongoOperator {
         activityCollection = database.getCollection(MongoConstants.ACTIVITY_COLLECTION_NAME);
     }
 
+
+    // =================================================================================================================
+    // Interface Methods
+    // =================================================================================================================
+
+    
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Get Profiles for different authentications 
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    /**
+     * Method to get a profile in Mongo based on a Facebook Authentication Bean. If no existing profile can be found
+     * a new one will be created.
+     *
+     * @param facebook A facebook authentication Bean
+     * @throws MongoException If an error occurs while accessing the database
+     * @return Either a new profile initialized with the facebook auth or an existing profile that contained this 
+     * authorization. Caller will not be notified if the account is new or not.
+     */
     @Override
-    public boolean exists(AccountID account) throws MongoException{
-
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> collection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-        FindIterable<Document> dbAccount = collection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, account.getAccountID()));
-
-        // If the search returned null or the iterator has no elements in it
-        if (dbAccount == null || !dbAccount.iterator().hasNext()){
-            return false;
+    public Profile getProfile(FacebookAuth facebook) throws MongoException {
+        FindIterable<Document> existingProfiles = profileCollection.find(
+                new Document("authorizations.service", "facebook").append("authorizations.Id", facebook.getId())
+        );
+        Iterator<Document> facebookProfile = existingProfiles.iterator();
+        // If at least one profile was found
+        if (facebookProfile.hasNext()){
+            Document foundDoc = facebookProfile.next();
+            // Two profiles were found that could match there is an error with the data!
+            if (facebookProfile.hasNext()){
+                throw new MongoException("More than one matching profile was found for facebook id " + facebook.getId());
+            }
+            else {
+                return convertToProfile(foundDoc);
+            }
         }
-        return true;
+        else {
+            return createProfileFromAuth(facebook);
+        }
+    }
+
+    /**
+     * Method to get a profile in Mongo based on a google Authentication Bean. If no existing profile can be found
+     * a new one will be created.
+     *
+     * @param google A google authentication Bean
+     * @throws MongoException If an error occurs while accessing the database
+     * @return Either a new profile initialized with the google auth or an existing profile that contained this 
+     * authorization. Caller will not be notified if the account is new or not.
+     */
+    @Override
+    public Profile getProfile(GoogleAuth google) throws MongoException {
+        FindIterable<Document> existingProfiles = profileCollection.find(
+                new Document("authorizations.service", "google").append("authorizations.Id", google.getId())
+        );
+        Iterator<Document> facebookProfile = existingProfiles.iterator();
+        // If at least one profile was found
+        if (facebookProfile.hasNext()){
+            Document foundDoc = facebookProfile.next();
+            // Two profiles were found that could match there is an error with the data!
+            if (facebookProfile.hasNext()){
+                throw new MongoException("More than one matching profile was found for facebook id " + google.getId());
+            }
+            else {
+                return convertToProfile(foundDoc);
+            }
+        }
+        else {
+            return createProfileFromAuth(google);
+        }
+    }
+
+    /**
+     * Method to get a profile in Mongo based on a twitter Authentication Bean. If no existing profile can be found
+     * a new one will be created.
+     *
+     * @param twitter A twitter authentication Bean
+     * @throws MongoException If an error occurs while accessing the database
+     * @return Either a new profile initialized with the twitter auth or an existing profile that contained this 
+     * authorization. Caller will not be notified if the account is new or not.
+     */
+    @Override
+    public Profile getProfile(TwitterAuth twitter) throws MongoException {
+        FindIterable<Document> existingProfiles = profileCollection.find(
+                new Document("authorizations.service", "google").append("authorizations.Id", twitter.getId())
+        );
+        Iterator<Document> facebookProfile = existingProfiles.iterator();
+        // If at least one profile was found
+        if (facebookProfile.hasNext()){
+            Document foundDoc = facebookProfile.next();
+            // Two profiles were found that could match there is an error with the data!
+            if (facebookProfile.hasNext()){
+                throw new MongoException("More than one matching profile was found for facebook id " + twitter.getId());
+            }
+            else {
+                return convertToProfile(foundDoc);
+            }
+        }
+        else {
+            return createProfileFromAuth(twitter);
+        }
     }
 
     @Override
-    public void populateProfile(Profile profile) throws MongoException{
+    public Profile getProfile(AccountID accountID) throws MongoException{
         MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> collection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        MongoIterable<Document> foundProfiles = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID()));
+        Iterator<Document> foundProfilesIterator = foundProfiles.iterator();
+        if (foundProfilesIterator.hasNext()){
+            Document foundDocument = foundProfilesIterator.next();
+            Profile requestedProfile = new Profile();
+            requestedProfile.setFirstName(foundDocument.getString(MongoConstants.FIRST_NAME_FIELD));
+            requestedProfile.setLastName(foundDocument.getString(MongoConstants.LAST_NAME_FIELD));
+            requestedProfile.setTotalMiles(foundDocument.getInteger(MongoConstants.TOTAL_MILES_FIELD));
+            requestedProfile.setId(foundDocument.getString(MongoConstants.ACCOUNT_ID_FIELD));
+            return requestedProfile;
+        }
+        throw new MongoException("Could not find account with account id" + accountID.getAccountID());
 
-        Document document = new Document(MongoConstants.ACCOUNT_ID_FIELD, profile.getId())
-                .append(MongoConstants.FIRST_NAME_FIELD, profile.getFirstName())
-                .append(MongoConstants.LAST_NAME_FIELD, profile.getLastName())
-                .append(MongoConstants.TOTAL_MILES_FIELD, profile.getTotalMiles());
-        collection.insertOne(document);
+
     }
 
     @Override
@@ -113,26 +209,6 @@ public class MongoHandler implements MongoOperator {
             return matchedTeam;
         }
         return null;
-
-    }
-
-    @Override
-    public Profile getProfile(AccountID accountID) throws MongoException{
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-        MongoIterable<Document> foundProfiles = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID()));
-        Iterator<Document> foundProfilesIterator = foundProfiles.iterator();
-        if (foundProfilesIterator.hasNext()){
-            Document foundDocument = foundProfilesIterator.next();
-            Profile requestedProfile = new Profile();
-            requestedProfile.setFirstName(foundDocument.getString(MongoConstants.FIRST_NAME_FIELD));
-            requestedProfile.setLastName(foundDocument.getString(MongoConstants.LAST_NAME_FIELD));
-            requestedProfile.setTotalMiles(foundDocument.getInteger(MongoConstants.TOTAL_MILES_FIELD));
-            requestedProfile.setId(foundDocument.getString(MongoConstants.ACCOUNT_ID_FIELD));
-            return requestedProfile;
-        }
-        throw new MongoException("Could not find account with account id" + accountID.getAccountID());
-
 
     }
 
@@ -190,6 +266,30 @@ public class MongoHandler implements MongoOperator {
         throw new MongoException("A problem occured while getting team data");
 
 
+    }
+    // =================================================================================================================
+    // HELPER METHODS
+    // =================================================================================================================
+
+    Profile convertToProfile(Document doc){
+
+    }
+
+    Profile createProfileFromAuth(FacebookAuth auth) throws MongoException{
+        Map<String, Object> profileObj = new HashMap<>();
+        profileObj.put("totalMiles", 0);
+        profileObj.put("teamName", "");
+        profileObj.put("Authorizations",)
+        new Document(profileObj);
+
+    }
+    
+    Profile createProfileFromAuth(GoogleAuth auth) throws MongoException {
+        
+    }
+    
+    Profile createProfileFromAuth(TwitterAuth auth) throws MongoException {
+        
     }
 
     int getProfileTotalMiles(AccountID accountID) throws MongoException{
