@@ -1,4 +1,4 @@
-package mongohandler;
+package mongohandler.constants;
 
 /**
  * Created by nick on 10/1/16.

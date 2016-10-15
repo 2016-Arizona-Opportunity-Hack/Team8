@@ -1,6 +1,7 @@
 package mongohandler;
 
 import com.mongodb.MongoClient;
+import mongohandler.constants.MongoConstants;
 
 /**
  * Created by nick on 10/9/16.
