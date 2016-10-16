@@ -61,13 +61,13 @@ public class LoginWS {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            Profile profile = mapper.readValue(crunchifyBuilder.toString(), Profile.class);
+            Profile profile = null;
             if(authType.equals("facebook")) {
                 facebookAuth = mapper.readValue(crunchifyBuilder.toString(), FacebookAuth.class);
 
                 accountID = new AccountID(facebookAuth.getId());
             }else if(authType.equals("google")){
-                facebookAuth = mapper.readValue(crunchifyBuilder.toString(), FacebookAuth.class);
+                googleAuth = mapper.readValue(crunchifyBuilder.toString(), GoogleAuth.class);
 
                 accountID = new AccountID(googleAuth.getId());
             }else if(authType.equals("twitter")){
