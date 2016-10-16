@@ -4,7 +4,7 @@
 var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var configAuth = require('./auth');
-var User = require('../app/models/user');
+var Users = require('../app/models/user');
 // expose this function to our app using module.exports
 module.exports = function(passport) {
 
@@ -16,14 +16,14 @@ module.exports = function(passport) {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
-      console.log(user);
-        done(null, user.profile.rangerID);
+        done(null, user.rangerID);
     });
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
       // TODO: Implement searching algorithm to return correct user based on ID
-        done(null, new User());
+        user = Users.findById(id);
+        done(null, user);
 
     });
 
@@ -38,13 +38,16 @@ module.exports = function(passport) {
     },
     function(token, refreshToken, profile, done){
       process.nextTick(function(){
-        var user = new User();
-        // console.log(profile);
-        user.profile.facebook.id = profile.id;
-        user.profile.facebook.token = token;
-        user.profile.facebook.email = profile.emails[0].value
-        user.profile.facebook.name = profile.displayName;
-
+        var user = {
+          'facebook'         : {
+              'id'           : profile.id,
+              'token'        : token,
+              'email'        : profile.emails[0].value,
+              'name'         : profile.displayName
+          },
+          'rangerID' : Math.random() * 1000
+        }
+        Users.save(user)
         return done(null, user);
       });
     }))

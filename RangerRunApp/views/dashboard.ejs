@@ -13,7 +13,7 @@
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#">Gallant Few</a>
+				<a class="navbar-brand" data-name = "<%= user.facebook.name %>" href="#"><%= user.facebook.name %></a>
 			</div>
 			<ul class="nav navbar-nav">
 				<li><a href="#">Team Management</a></li>
@@ -30,6 +30,7 @@
 		<div class="page-header text-center">
 			<h1><span class="fa fa-anchor"></span> Run Ranger Run</h1>
 		</div>
+		<canvas id="canvas" width="400" height="100"></canvas>
 		<div class="row">
 			<!-- LOCAL INFORMATION -->
 			<div class="col-lg-6 well">
@@ -80,5 +81,10 @@
 			</div>
 		</div>
 	</div>
+	<script src="js/jquery.js"></script>
+	<script src="js/Chart.min.js"></script>
+	<script src="js/ResponseHandlerHub.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/profile.js"></script>
 </body>
 </html>
