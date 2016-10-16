@@ -1,0 +1,40 @@
+{
+    "request": {
+        "method": "POST",
+        "url": "/login",
+        "headers": {
+            "auth-type": {
+              "equalTo": "facebook"
+              }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+          "facebook"         : {
+          "id"           : "12345",
+          "token"        : "ABCD",
+          "email"        : "testUser@gmail.com",
+          "name"         : "TEST USER"
+      },
+      "twitter"          : {
+          "id"           : "",
+          "token"        : "",
+          "displayName"  : "",
+          "username"     : ""
+      },
+      "google"           : {
+          "id"           : "",
+          "token"        : "",
+          "email"        : "",
+          "name"         : ""
+      },
+      "rangerID" : "12345",
+      "name": "TEST USER",
+      "totalMiles": 0
+  },
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}
