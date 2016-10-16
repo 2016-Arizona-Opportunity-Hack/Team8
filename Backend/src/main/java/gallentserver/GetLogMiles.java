@@ -61,7 +61,9 @@ public class GetLogMiles {
 
 
 
-        return Integer.toString(miles);
+        return "{\n" +
+                "  \"miles\": " + Integer.toString(miles) +
+                "}";
 
 
     }

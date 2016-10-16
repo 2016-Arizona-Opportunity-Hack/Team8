@@ -96,7 +96,7 @@ public class MongoHandler implements MongoOperator {
         if (found.iterator().hasNext()){
             Document matchedDoc = found.iterator().next();
             matchedTeam.setTeamName(matchedDoc.getString(MongoConstants.TEAM_ID_FIELD));
-            BasicDBList teamMembers =  (BasicDBList)matchedDoc.get(MongoConstants.TEAM_MEMBERS_FIELD);
+            List<String> teamMembers =  (List<String>)matchedDoc.get(MongoConstants.TEAM_MEMBERS_FIELD);
             List<Profile> teamMemberList = new LinkedList<>();
             for (Object teamMember : teamMembers){
                 Profile teamMemberProfile = getProfileBean(teamMember);

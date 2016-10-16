@@ -9,7 +9,7 @@ public class MongoConstants {
     static final String LOGGED_MILES_COLLECTION_NAME = "LoggedMiles";
     static final String DATABASE_NAME = "GALENT_FEW_MARATHON";
 
-    static final String DEFAULT_HOSTNAME = "10.143.192.182";
+    static final String DEFAULT_HOSTNAME = "localhost";
     static final int DEFAULT_PORT = 27017;
 
     // Account Bean fields
