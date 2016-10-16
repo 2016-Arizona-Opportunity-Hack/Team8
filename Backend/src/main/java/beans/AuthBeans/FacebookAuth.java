@@ -3,7 +3,7 @@ package beans.AuthBeans;
 /**
  * Created by nick on 10/9/16.
  */
-public class FacebookAuth implements AuthorizationBean {
+public class FacebookAuth {
     public String id;
     public String email;
     public String name;

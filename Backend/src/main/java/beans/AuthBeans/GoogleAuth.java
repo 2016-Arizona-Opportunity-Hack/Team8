@@ -3,7 +3,7 @@ package beans.AuthBeans;
 /**
  * Created by nick on 10/9/16.
  */
-public class GoogleAuth implements AuthorizationBean {
+public class GoogleAuth {
 
     public String id;
     public String email;

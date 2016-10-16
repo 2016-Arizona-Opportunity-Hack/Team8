@@ -3,7 +3,7 @@ package beans.AuthBeans;
 /**
  * Created by nick on 10/9/16.
  */
-public class TwitterAuth implements AuthorizationBean{
+public class TwitterAuth{
 
     public String id;
     public String token;
