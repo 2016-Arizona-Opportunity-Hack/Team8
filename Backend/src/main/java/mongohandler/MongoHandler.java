@@ -252,14 +252,15 @@ public class MongoHandler implements MongoOperator {
     Profile convertToProfile(Document doc){
         Profile profile = new Profile();
         profile.setName(doc.getString(ProfileConstants.NAME));
-        profile.setId(doc.getString("_id"));
+        profile.setId(doc.getObjectId("_id").toString());
         profile.setTeamName(doc.getString(ProfileConstants.TEAM_NAME));
-        profile.setTotalMiles(doc.getInteger(ProfileConstants.TEAM_NAME));
+        profile.setTotalMiles(doc.getInteger(ProfileConstants.TOTAL_MILES));
 
         // Set facebook Authentication
         FacebookAuth fb = new FacebookAuth();
-        Document facebookDoc =
-                (Document) doc.get(ProfileConstants.AUTHENTICATIONS + "." + AuthenticationConstants.FACEBOOK_AUTH);
+        Document facebookDoc = (Document)
+                ((Document)doc.get(ProfileConstants.AUTHENTICATIONS))
+                        .get(AuthenticationConstants.FACEBOOK_AUTH);
 
         fb.setName(facebookDoc.getString(AuthenticationConstants.FACEBOOK_NAME));
         fb.setId(facebookDoc.getString(AuthenticationConstants.FACEBOOK_ID));
@@ -268,8 +269,8 @@ public class MongoHandler implements MongoOperator {
 
         // Set google Authentication
         GoogleAuth google = new GoogleAuth();
-        Document googleDoc =
-                (Document) doc.get(ProfileConstants.AUTHENTICATIONS + "." + AuthenticationConstants.GOOGLE_AUTH);
+        Document googleDoc = (Document)
+                ((Document) doc.get(ProfileConstants.AUTHENTICATIONS)).get(AuthenticationConstants.GOOGLE_AUTH);
 
         google.setName(googleDoc.getString(AuthenticationConstants.GOOGLE_NAME));
         google.setEmail(googleDoc.getString(AuthenticationConstants.GOOGLE_EMAIL));
@@ -278,8 +279,8 @@ public class MongoHandler implements MongoOperator {
 
         // Set twitter Authentication
         TwitterAuth twitter = new TwitterAuth();
-        Document twitterDoc =
-                (Document)doc.get(ProfileConstants.AUTHENTICATIONS + "." + AuthenticationConstants.TWITTER_AUTH);
+        Document twitterDoc = (Document)
+                ((Document)doc.get(ProfileConstants.AUTHENTICATIONS)).get(AuthenticationConstants.TWITTER_AUTH);
 
         twitter.setId(twitterDoc.getString(AuthenticationConstants.TWITTER_ID));
         twitter.setToken(twitterDoc.getString(AuthenticationConstants.TWITTER_TOKEN));
@@ -298,8 +299,9 @@ public class MongoHandler implements MongoOperator {
     Profile createProfileFromAuth(FacebookAuth auth) throws MongoException{
         Document facebookProfile = createNewProfileDoc();
         // Get the facebook authentication doc
-        Document facebookAuth = (Document)facebookProfile.get(ProfileConstants.AUTHENTICATIONS + "." +
-                AuthenticationConstants.FACEBOOK_AUTH);
+        Document facebookAuth = (Document)
+                ((Document)facebookProfile.get(ProfileConstants.AUTHENTICATIONS))
+                        .get(AuthenticationConstants.FACEBOOK_AUTH);
 
         // Set the fields in the facebook authentication doc
         facebookAuth.replace(AuthenticationConstants.FACEBOOK_ID, auth.getId());
