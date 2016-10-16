@@ -21,7 +21,7 @@ import java.util.Iterator;
  * Created by nick on 10/1/16.
  */
 public class MongoHandlerTest{
-
+/*
     MongoClient client;
     MongoDatabase mongoDatabase;
 
@@ -114,5 +114,5 @@ public class MongoHandlerTest{
         MongoIterable<Document> searchRestult = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, "test1@test.com"));
     }
 
-
+*/
 }

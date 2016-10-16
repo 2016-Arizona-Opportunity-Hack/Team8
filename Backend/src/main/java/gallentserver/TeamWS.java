@@ -90,7 +90,7 @@ public class TeamWS {
         try {
             Team team = mapper.readValue(TeamJson, Team.class);
             System.out.println("team " + team.getTeamName() );
-            System.out.println("team member " + team.getMembers().get(0).firstName );
+            System.out.println("team member " + team.getMembers().get(0).name );
         } catch (IOException e) {
             e.printStackTrace();
         }
