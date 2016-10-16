@@ -76,7 +76,20 @@ public class Profile {
         this.id = id;
     }
 
+    public boolean equals(Object obj){
+        if (obj instanceof Profile){
+            Profile other = (Profile)obj;
+            if ((other.totalMiles == this.totalMiles)
+                    && (other.teamName.equals(teamName))
+                    && (other.name.equals(this.name))
+                    && (other.id.equals(this.id))
+                    && (other.facebook.equals(this.facebook))
+                    && (other.google.equals(this.google))
+                    && (other.twitter.equals(this.twitter))){
+                return true;
+            }
 
-
-
+        }
+        return false;
+    }
 }

@@ -40,4 +40,18 @@ public class FacebookAuth {
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof FacebookAuth){
+            FacebookAuth other = (FacebookAuth) obj;
+
+            if ((this.id.equals(other.id))
+                    && (this.email.equals(other.email))
+                    && (this.name.equals(other.name))
+                    && this.token.equals(other.token)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -42,4 +42,18 @@ public class TwitterAuth{
         this.username = username;
     }
 
+    public boolean equals(Object obj) {
+        if (obj instanceof TwitterAuth){
+            TwitterAuth other = (TwitterAuth) obj;
+
+            if ((this.id.equals(other.id))
+                    && (this.username.equals(other.username))
+                    && (this.displayName.equals(other.displayName))
+                    && this.token.equals(other.token)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
