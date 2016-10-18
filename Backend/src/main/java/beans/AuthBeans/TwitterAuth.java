@@ -5,10 +5,10 @@ package beans.AuthBeans;
  */
 public class TwitterAuth{
 
-    public String id;
-    public String token;
-    public String username;
-    public String displayName;
+    public String id = "";
+    public String token = "";
+    public String username = "";
+    public String displayName = "";
 
     public String getId() {
         return id;

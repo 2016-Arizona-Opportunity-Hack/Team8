@@ -12,10 +12,10 @@ import beans.AuthBeans.TwitterAuth;
  *
  */
 public class Profile {
-    public int totalMiles;
-    public String teamName;
-    public String name;
-    public String id;
+    public int totalMiles = 0;
+    public String teamName = "";
+    public String name = "";
+    public String id = "";
     public FacebookAuth facebook;
     public TwitterAuth twitter;
     public GoogleAuth google;

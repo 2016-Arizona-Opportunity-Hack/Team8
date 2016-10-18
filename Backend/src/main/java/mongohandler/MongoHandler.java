@@ -45,6 +45,15 @@ public class MongoHandler implements MongoOperator {
         activityCollection = database.getCollection(MongoConstants.ACTIVITY_COLLECTION_NAME);
     }
 
+    // Constructor to change db for testing purposes
+    MongoHandler(String hostname, int port, String DBName){
+        client = MongoConnection.getMongoClient(hostname, port);
+        database = client.getDatabase(DBName);
+        profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        teamCollection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
+        activityCollection = database.getCollection(MongoConstants.ACTIVITY_COLLECTION_NAME);
+    }
+
 
     // =================================================================================================================
     // Interface Methods
@@ -66,9 +75,12 @@ public class MongoHandler implements MongoOperator {
      */
     @Override
     public Profile getProfile(FacebookAuth facebook) throws MongoException {
-        FindIterable<Document> existingProfiles = profileCollection.find(
-                new Document("authorizations.facebook.id", facebook.getId())
-        );
+//        FindIterable<Document> existingProfiles = profileCollection.find(
+//                new Document("authorizations.facebook.id", facebook.getId())
+//        );
+        FindIterable<Document> existingProfiles = profileCollection.find(new Document(ProfileConstants.AUTHENTICATIONS +
+                "." + AuthenticationConstants.FACEBOOK_AUTH +
+                "." + AuthenticationConstants.FACEBOOK_ID, facebook.getId()));
         Iterator<Document> facebookProfile = existingProfiles.iterator();
         // If at least one profile was found
         if (facebookProfile.hasNext()){

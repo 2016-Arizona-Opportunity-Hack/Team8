@@ -4,10 +4,10 @@ package beans.AuthBeans;
  * Created by nick on 10/9/16.
  */
 public class FacebookAuth {
-    public String id;
-    public String email;
-    public String name;
-    public String token;
+    public String id = "";
+    public String email = "";
+    public String name = "";
+    public String token = "";
 
     public String getId() {
         return id;

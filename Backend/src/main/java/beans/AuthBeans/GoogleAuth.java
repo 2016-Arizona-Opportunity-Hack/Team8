@@ -5,10 +5,10 @@ package beans.AuthBeans;
  */
 public class GoogleAuth {
 
-    public String id;
-    public String email;
-    public String name;
-    public String token;
+    public String id = "";
+    public String email = "";
+    public String name = "";
+    public String token = "";
 
     public String getId() {
         return id;
