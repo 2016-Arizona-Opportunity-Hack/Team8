@@ -82,7 +82,7 @@ public class Profile {
             if ((other.totalMiles == this.totalMiles)
                     && (other.teamName.equals(teamName))
                     && (other.name.equals(this.name))
-                    && (other.id.equals(this.id))
+//                    && (other.id.equals(this.id))
                     && (other.facebook.equals(this.facebook))
                     && (other.google.equals(this.google))
                     && (other.twitter.equals(this.twitter))){
