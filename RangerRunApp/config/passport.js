@@ -42,7 +42,7 @@ module.exports = function(passport) {
               'id'           : profile.id,
               'token'        : token,
               'email'        : profile.emails[0].value,
-              'name'         : profile.displayName
+              'name'         : profile.displayName,
               'rangerID' : Math.random() * 1000
         }
         Users.save(user)
