@@ -15,13 +15,11 @@ this.findById = function (id){
     }
   }
   return {
-    'facebook':{
       'id': '',
       'token': '',
       'email': '',
-      'name': ''
-    },
-    'rangerID' : Math.random() * 1000
+      'name': '',
+      'rangerID' : Math.random() * 1000
   }
   }
 

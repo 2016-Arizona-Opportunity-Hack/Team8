@@ -39,13 +39,11 @@ module.exports = function(passport) {
     function(token, refreshToken, profile, done){
       process.nextTick(function(){
         var user = {
-          'facebook'         : {
               'id'           : profile.id,
               'token'        : token,
               'email'        : profile.emails[0].value,
               'name'         : profile.displayName
-          },
-          'rangerID' : Math.random() * 1000
+              'rangerID' : Math.random() * 1000
         }
         Users.save(user)
         return done(null, user);
