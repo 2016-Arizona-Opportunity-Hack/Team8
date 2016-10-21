@@ -1,0 +1,19 @@
+.nav li a, .navbar-inverse .navbar-header a{
+  font-size: 15px;
+  font-family: 'Passion One', sans-serif;
+  color: #ffffff !important;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+.team-present, .team-not{
+  display: none;
+}
+
+#team-name{
+  display: none;
+}
+.team-section img{
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+}

@@ -2,6 +2,14 @@ var dummyJSON = '{"total_miles": 0.0, "team_name": "TiredFew", "last_name": "Doe
 var profileName = 'NA' // need form FB
 
 function populatePage(data){
+    if(!!data.teamName && data.teamName != ''){
+      $('#team-name').show()
+      // TODO make a call to the server to get the team information
+    } else {
+      $('.default-loading').hide()
+      $('.team-not').show()
+
+    }
     console.log(data)
 }
 
