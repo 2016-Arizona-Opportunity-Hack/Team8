@@ -2,31 +2,30 @@
 // load the things we need
 // var bcrypt   = require('bcrypt-nodejs');
 
-module.exports = function User() {
-    this.profile = {
-      facebook         : {
-          id           : "",
-          token        : "",
-          email        : "",
-          name         : ""
-      },
-      twitter          : {
-          id           : "",
-          token        : "",
-          displayName  : "",
-          username     : ""
-      },
-      google           : {
-          id           : "",
-          token        : "",
-          email        : "",
-          name         : ""
-      },
-      rangerID : "12345",
-      totalMiles : 0,
-      name: "",
-      teamName : ""
-  }
+module.exports = function() {
+    this.facebook = {
+        id           : "",
+        token        : "",
+        email        : "",
+        name         : ""
+    },
+    this.twitter = {
+        id           : "",
+        token        : "",
+        displayName  : "",
+        username     : ""
+    },
+    this.google = {
+        id           : "",
+        token        : "",
+        email        : "",
+        name         : ""
+    },
+    this.rangerID = "12345",
+    this.totalMiles =  0,
+    this.name = "",
+    this.teamName = ""
+    return this;
 }
 // methods ======================
 // generating a hash

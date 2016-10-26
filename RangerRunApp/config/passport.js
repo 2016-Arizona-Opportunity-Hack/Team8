@@ -4,7 +4,7 @@
 var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var configAuth = require('./auth');
-var Users = require('../app/models/user');
+var User = require('../app/models/user');
 // expose this function to our app using module.exports
 module.exports = function(passport) {
 
@@ -22,7 +22,7 @@ module.exports = function(passport) {
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
       // TODO: Implement searching algorithm to return correct user based on ID
-        user = Users.findById(id);
+        user = new User();
         done(null, user);
 
     });
@@ -37,18 +37,15 @@ module.exports = function(passport) {
       profileFields: ['id', 'displayName', 'email']
     },
     function(token, refreshToken, profile, done){
-      process.nextTick(function(){
-        var user = {
-          'facebook'         : {
-              'id'           : profile.id,
-              'token'        : token,
-              'email'        : profile.emails[0].value,
-              'name'         : profile.displayName
-          },
-          'rangerID' : Math.random() * 1000
-        }
-        Users.save(user)
-        return done(null, user);
-      });
-    }))
+      console.log(User);
+      var user = new User();
+      user.facebook.id = profile.id;
+      user.facebook.token = token;
+      user.facebook.email = profile.emails[0].value;
+      user.facebook.name = profile.displayName;
+
+      console.log("Got a response : " + user.facebook);
+
+      return done(null, user);
+    }));
 };
