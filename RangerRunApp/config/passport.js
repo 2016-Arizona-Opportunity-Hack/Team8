@@ -5,6 +5,7 @@ var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var configAuth = require('./auth');
 var User = require('../app/models/user');
+var Backend = require('../app/RESTcalls');
 // expose this function to our app using module.exports
 module.exports = function(passport) {
 
@@ -44,8 +45,8 @@ module.exports = function(passport) {
       user.facebook.email = profile.emails[0].value;
       user.facebook.name = profile.displayName;
 
-      console.log("Got a response : " + user.facebook);
-
+      user = Backend.login("facebook", user.facebook);
+      console.log("Backend returned: " + JSON.stringify(user));
       return done(null, user);
     }));
 };
