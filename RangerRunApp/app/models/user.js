@@ -2,6 +2,7 @@
 // load the things we need
 // var bcrypt   = require('bcrypt-nodejs');
 
+<<<<<<< HEAD
 module.exports = function() {
     this.facebook = {
         id           : "",
@@ -26,6 +27,29 @@ module.exports = function() {
     this.name = "",
     this.teamName = ""
     return this;
+=======
+
+var Users = function (){
+this.users = []
+this.save = function(u){
+  this.users.push(u)
+}
+this.findById = function (id){
+  for (var i =0 ; i<this.users.length; i++){
+    if (this.users[i].rangerID == id){
+      return this.users[i]
+    }
+  }
+  return {
+      'id': '',
+      'token': '',
+      'email': '',
+      'name': '',
+      'rangerID' : Math.random() * 1000
+  }
+  }
+
+>>>>>>> 7c5104c206abeadc0923066a04d23cbe3f36a6cb
 }
 // methods ======================
 // generating a hash
