@@ -1,5 +1,8 @@
 package gallentserver;
 import beans.AccountID;
+import beans.AuthBeans.FacebookAuth;
+import beans.AuthBeans.GoogleAuth;
+import beans.AuthBeans.TwitterAuth;
 import beans.Profile;
 import beans.Team;
 import mongohandler.MongoException;
@@ -30,7 +33,7 @@ public class LoginWS {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String loginUser(final InputStream incomingData){
+    public String loginUser(final InputStream incomingData,@HeaderParam("auth-type") String authType){
 
         Object result = null;
         JSONObject jobject = null;
@@ -38,6 +41,10 @@ public class LoginWS {
         StringBuilder sb = new StringBuilder();
 
         StringBuilder crunchifyBuilder = new StringBuilder();
+        FacebookAuth facebookAuth = null;
+        TwitterAuth twitterAuth = null;
+        GoogleAuth googleAuth = null;
+        AccountID accountID = null;
 
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(incomingData));
@@ -54,16 +61,23 @@ public class LoginWS {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            Profile profile = mapper.readValue(crunchifyBuilder.toString(), Profile.class);
+            Profile profile = null;
+            if(authType.equals("facebook")) {
+                facebookAuth = mapper.readValue(crunchifyBuilder.toString(), FacebookAuth.class);
 
-            AccountID accountID = new AccountID(profile.getId());
-            if(!mongoOperator.exists(accountID)){
+                accountID = new AccountID(facebookAuth.getId());
+            }else if(authType.equals("google")){
+                googleAuth = mapper.readValue(crunchifyBuilder.toString(), GoogleAuth.class);
 
-                mongoOperator.populateProfile(profile);
-            }else{
-
-                profile = mongoOperator.getProfile(accountID);
+                accountID = new AccountID(googleAuth.getId());
+            }else if(authType.equals("twitter")){
+                twitterAuth = mapper.readValue(crunchifyBuilder.toString(), TwitterAuth.class);
+                accountID = new AccountID(twitterAuth.getId());
             }
+
+
+             profile = mongoOperator.getProfile(accountID);
+
             callStatus = mapper.writeValueAsString(profile);
 
         }  catch (JsonParseException e) {

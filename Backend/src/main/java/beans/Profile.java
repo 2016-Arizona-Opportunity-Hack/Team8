@@ -1,24 +1,56 @@
 package beans;
 
-import java.io.Serializable;
+import beans.AuthBeans.FacebookAuth;
+import beans.AuthBeans.GoogleAuth;
+import beans.AuthBeans.TwitterAuth;
 
 /**
  * Created by nick on 10/1/16.
+ *
+ *
+ *
+ *
  */
 public class Profile {
-    //{"total_miles": 0.0, "team_name": "", "last_name": "lastName", "first_name": "firstName", "ID": "ID123"}
+    public int totalMiles = 0;
+    public String teamName = "";
+    public String name = "";
+    public String id = "";
+    public FacebookAuth facebook;
+    public TwitterAuth twitter;
+    public GoogleAuth google;
 
-   // private static final long serialVersionUID = 1L;
-    public int totalMiles;
+    public String getName() {
+        return name;
+    }
 
-    public String teamName;
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String firstName;
+    public FacebookAuth getFacebook() {
+        return facebook;
+    }
 
-    public String lastName;
+    public void setFacebook(FacebookAuth facebook) {
+        this.facebook = facebook;
+    }
 
-    public String id;
+    public TwitterAuth getTwitter() {
+        return twitter;
+    }
 
+    public void setTwitter(TwitterAuth twitter) {
+        this.twitter = twitter;
+    }
+
+    public GoogleAuth getGoogle() {
+        return google;
+    }
+
+    public void setGoogle(GoogleAuth google) {
+        this.google = google;
+    }
 
     public int getTotalMiles() {
         return totalMiles;
@@ -36,22 +68,6 @@ public class Profile {
         this.teamName = teamName;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getId() {
         return id;
     }
@@ -60,7 +76,20 @@ public class Profile {
         this.id = id;
     }
 
+    public boolean equals(Object obj){
+        if (obj instanceof Profile){
+            Profile other = (Profile)obj;
+            if ((other.totalMiles == this.totalMiles)
+                    && (other.teamName.equals(teamName))
+                    && (other.name.equals(this.name))
+//                    && (other.id.equals(this.id))
+                    && (other.facebook.equals(this.facebook))
+                    && (other.google.equals(this.google))
+                    && (other.twitter.equals(this.twitter))){
+                return true;
+            }
 
-
-
+        }
+        return false;
+    }
 }

@@ -1,23 +1,27 @@
 package mongohandler;
 
 import beans.*;
-import com.mongodb.Mongo;
-
-import java.util.List;
+import beans.AuthBeans.FacebookAuth;
+import beans.AuthBeans.GoogleAuth;
+import beans.AuthBeans.TwitterAuth;
 
 /**
  * Created by nick on 10/1/16.
  */
 public interface MongoOperator {
 
-    boolean exists (AccountID account) throws MongoException;
-
-    void populateProfile(Profile profile) throws MongoException;
-
     void populateTeam(Team team) throws MongoException;
 
     Team getTeam(TeamID teamID) throws MongoException;
 
+    // Methods for retreving profile for different kinds of authentications. Needed because each auth has different fields
+    Profile getProfile(FacebookAuth facebook) throws MongoException;
+
+    Profile getProfile(GoogleAuth google) throws MongoException;
+
+    Profile getProfile(TwitterAuth twitter) throws MongoException;
+
+    // Get a profile based on a unique accountID. AccountID is independent of auths ids
     Profile getProfile(AccountID accountID) throws MongoException;
 
     void addTeamMember(Team team, Profile newTeamMember) throws MongoException;

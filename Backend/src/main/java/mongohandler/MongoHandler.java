@@ -1,134 +1,196 @@
 package mongohandler;
 
 import beans.*;
-import com.mongodb.BasicDBList;
-import com.mongodb.Mongo;
+import beans.AuthBeans.FacebookAuth;
+import beans.AuthBeans.GoogleAuth;
+import beans.AuthBeans.TwitterAuth;
 import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoIterable;
-import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.*;
+import mongohandler.constants.AuthenticationConstants;
+import mongohandler.constants.MongoConstants;
+import mongohandler.constants.ProfileConstants;
 import org.bson.Document;
 import static com.mongodb.client.model.Filters.*;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by nick on 10/1/16.
  */
 public class MongoHandler implements MongoOperator {
 
-    public MongoClient client;
-    public MongoDatabase database;
+    MongoClient client;
+    MongoDatabase database;
+    MongoCollection<Document> profileCollection;
+    MongoCollection<Document> teamCollection;
+    MongoCollection<Document> activityCollection;
 
     /**
      * Defining the constructors for the client
      */
     public MongoHandler() {
-        client = new MongoClient(MongoConstants.DEFAULT_HOSTNAME, MongoConstants.DEFAULT_PORT);
-        client.getDatabase(MongoConstants.DATABASE_NAME);
+        this(MongoConstants.DEFAULT_HOSTNAME, MongoConstants.DEFAULT_PORT);
+
     }
 
     public MongoHandler(String hostname) {
-        client = new MongoClient(hostname);
-        client.getDatabase(MongoConstants.DATABASE_NAME);
+        this(hostname, MongoConstants.DEFAULT_PORT);
     }
 
     public MongoHandler(String hostname, int port) {
-        client = new MongoClient(hostname, port);
-        client.getDatabase(MongoConstants.DATABASE_NAME);
+        client = MongoConnection.getMongoClient(hostname, port);
+        database = client.getDatabase(MongoConstants.DATABASE_NAME);
+        profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        teamCollection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
+        activityCollection = database.getCollection(MongoConstants.ACTIVITY_COLLECTION_NAME);
     }
 
+    // Constructor to change db for testing purposes
+    MongoHandler(String hostname, int port, String DBName){
+        client = MongoConnection.getMongoClient(hostname, port);
+        database = client.getDatabase(DBName);
+        profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+        teamCollection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
+        activityCollection = database.getCollection(MongoConstants.ACTIVITY_COLLECTION_NAME);
+    }
+
+
+    // =================================================================================================================
+    // Interface Methods
+    // =================================================================================================================
+
+    
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Get Profiles for different authentications 
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    /**
+     * Method to get a profile in Mongo based on a Facebook Authentication Bean. If no existing profile can be found
+     * a new one will be created.
+     *
+     * @param facebook A facebook authentication Bean
+     * @throws MongoException If an error occurs while accessing the database
+     * @return Either a new profile initialized with the facebook auth or an existing profile that contained this 
+     * authorization. Caller will not be notified if the account is new or not.
+     */
     @Override
-    public boolean exists(AccountID account) throws MongoException{
-
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> collection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-        FindIterable<Document> dbAccount = collection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, account.getAccountID()));
-
-        // If the search returned null or the iterator has no elements in it
-        if (dbAccount == null || !dbAccount.iterator().hasNext()){
-            return false;
+    public Profile getProfile(FacebookAuth facebook) throws MongoException {
+//        FindIterable<Document> existingProfiles = profileCollection.find(
+//                new Document("authorizations.facebook.id", facebook.getId())
+//        );
+        FindIterable<Document> existingProfiles = profileCollection.find(new Document(ProfileConstants.AUTHENTICATIONS +
+                "." + AuthenticationConstants.FACEBOOK_AUTH +
+                "." + AuthenticationConstants.FACEBOOK_ID, facebook.getId()));
+        Iterator<Document> facebookProfile = existingProfiles.iterator();
+        // If at least one profile was found
+        if (facebookProfile.hasNext()){
+            Document foundDoc = facebookProfile.next();
+            // Two profiles were found that could match there is an error with the data!
+            if (facebookProfile.hasNext()){
+                throw new MongoException("More than one matching profile was found for facebook id " + facebook.getId());
+            }
+            else {
+                return convertToProfile(foundDoc);
+            }
         }
-        return true;
+        else {
+            return createProfileFromAuth(facebook);
+        }
     }
 
+    /**
+     * Method to get a profile in Mongo based on a google Authentication Bean. If no existing profile can be found
+     * a new one will be created.
+     *
+     * @param google A google authentication Bean
+     * @throws MongoException If an error occurs while accessing the database
+     * @return Either a new profile initialized with the google auth or an existing profile that contained this 
+     * authorization. Caller will not be notified if the account is new or not.
+     */
     @Override
-    public void populateProfile(Profile profile) throws MongoException{
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> collection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+    public Profile getProfile(GoogleAuth google) throws MongoException {
+        FindIterable<Document> existingProfiles = profileCollection.find(
+                new Document("authorizations.google.id", google.getId())
+        );
+        Iterator<Document> facebookProfile = existingProfiles.iterator();
+        // If at least one profile was found
+        if (facebookProfile.hasNext()){
+            Document foundDoc = facebookProfile.next();
+            // Two profiles were found that could match there is an error with the data!
+            if (facebookProfile.hasNext()){
+                throw new MongoException("More than one matching profile was found for facebook id " + google.getId());
+            }
+            else {
+                return convertToProfile(foundDoc);
+            }
+        }
+        else {
+            return createProfileFromAuth(google);
+        }
+    }
 
-        Document document = new Document(MongoConstants.ACCOUNT_ID_FIELD, profile.getId())
-                .append(MongoConstants.FIRST_NAME_FIELD, profile.getFirstName())
-                .append(MongoConstants.LAST_NAME_FIELD, profile.getLastName())
-                .append(MongoConstants.TOTAL_MILES_FIELD, profile.getTotalMiles());
-        collection.insertOne(document);
+    /**
+     * Method to get a profile in Mongo based on a twitter Authentication Bean. If no existing profile can be found
+     * a new one will be created.
+     *
+     * @param twitter A twitter authentication Bean
+     * @throws MongoException If an error occurs while accessing the database
+     * @return Either a new profile initialized with the twitter auth or an existing profile that contained this 
+     * authorization. Caller will not be notified if the account is new or not.
+     */
+    @Override
+    public Profile getProfile(TwitterAuth twitter) throws MongoException {
+        FindIterable<Document> existingProfiles = profileCollection.find(
+                new Document("authorizations.twitter", twitter.getId())
+        );
+        Iterator<Document> facebookProfile = existingProfiles.iterator();
+        // If at least one profile was found
+        if (facebookProfile.hasNext()){
+            Document foundDoc = facebookProfile.next();
+            // Two profiles were found that could match there is an error with the data!
+            if (facebookProfile.hasNext()){
+                throw new MongoException("More than one matching profile was found for facebook id " + twitter.getId());
+            }
+            else {
+                return convertToProfile(foundDoc);
+            }
+        }
+        else {
+            return createProfileFromAuth(twitter);
+        }
+    }
+
+    /**
+     * Method that finds a profile based on the Run Ranger Run unique id. This id is currently the unique id assigned
+     * to the profile document by mongo.
+     *
+     * @param accountID the accountID for the profile you want returned
+     * @return The requested profile
+     * @throws MongoException Throws an exception multiple accounts are found or the account does not exisit.
+     */
+    @Override
+    public Profile getProfile(AccountID accountID) throws MongoException{
+        Iterator<Document> profile = profileCollection.find(new Document("_id", accountID.getAccountID())).iterator();
+        if (profile.hasNext()) {
+            Document request = profile.next();
+            if (profile.hasNext()){
+                throw new MongoException("Multiple Matching Accounts Found!");
+            } else {
+                return convertToProfile(request);
+            }
+        } else {
+            throw new MongoException("No matching account was found!");
+        }
+
     }
 
     @Override
     public void populateTeam(Team team) throws MongoException{
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> collection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
-
-        BasicDBList teamMembers = new BasicDBList();
-        for (Profile profile : team.getMembers()){
-            teamMembers.add(profile.getId());
-        }
-
-        Document document = new Document(MongoConstants.TEAM_ID_FIELD, team.getTeamName())
-                .append(MongoConstants.TEAM_MEMBERS_FIELD, teamMembers);
-
-        collection.insertOne(document);
-
     }
 
     @Override
     public Team getTeam(TeamID teamID)  throws MongoException{
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> collection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
-        FindIterable<Document> found = collection.find(eq(MongoConstants.TEAM_ID_FIELD, teamID.getTeamID()));
-
-        Team matchedTeam = new Team();
-        // TODO: add exception if multiple documents are found
-        if (found.iterator().hasNext()){
-            Document matchedDoc = found.iterator().next();
-            matchedTeam.setTeamName(matchedDoc.getString(MongoConstants.TEAM_ID_FIELD));
-            BasicDBList teamMembers =  (BasicDBList)matchedDoc.get(MongoConstants.TEAM_MEMBERS_FIELD);
-            List<Profile> teamMemberList = new LinkedList<>();
-            for (Object teamMember : teamMembers){
-                Profile teamMemberProfile = getProfileBean(teamMember);
-                teamMemberList.add(teamMemberProfile);
-            }
-            matchedTeam.setMembers(teamMemberList);
-            matchedTeam.setTeamMiles(getTeamMiles(teamID));
-
-            return matchedTeam;
-        }
-        return null;
-
-    }
-
-    @Override
-    public Profile getProfile(AccountID accountID) throws MongoException{
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-        MongoIterable<Document> foundProfiles = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID()));
-        Iterator<Document> foundProfilesIterator = foundProfiles.iterator();
-        if (foundProfilesIterator.hasNext()){
-            Document foundDocument = foundProfilesIterator.next();
-            Profile requestedProfile = new Profile();
-            requestedProfile.setFirstName(foundDocument.getString(MongoConstants.FIRST_NAME_FIELD));
-            requestedProfile.setLastName(foundDocument.getString(MongoConstants.LAST_NAME_FIELD));
-            requestedProfile.setTotalMiles(foundDocument.getInteger(MongoConstants.TOTAL_MILES_FIELD));
-            requestedProfile.setId(foundDocument.getString(MongoConstants.ACCOUNT_ID_FIELD));
-            return requestedProfile;
-        }
-        throw new MongoException("Could not find account with account id" + accountID.getAccountID());
-
-
+        return new Team();
     }
 
     @Override
@@ -138,82 +200,147 @@ public class MongoHandler implements MongoOperator {
 
     @Override
     public void logMiles(AccountID accountID, LoggedMiles miles) throws MongoException {
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-        Iterator<Document> foundProfilesIterator = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID())).iterator();
-
-
-        if (foundProfilesIterator.hasNext()){
-            Document doc = foundProfilesIterator.next();
-            int totalMiles = doc.getInteger(MongoConstants.TOTAL_MILES_FIELD);
-            totalMiles += miles.getMiles();
-
-            // Update users total count
-            profileCollection.updateOne(new Document(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID()),
-                    new Document("$set", new Document(MongoConstants.TOTAL_MILES_FIELD, totalMiles)));
-            // Add a new miles log to collection
-            addMilesLogToMilesCollection(miles);
-
-        }
     }
 
     void addMilesLogToMilesCollection(LoggedMiles miles){
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> loggedMilesCollection = database.getCollection(MongoConstants.LOGGED_MILES_COLLECTION_NAME);
-        Document doc = new Document(MongoConstants.ACCOUNT_ID_FIELD, miles.accountId)
-                .append(MongoConstants.MILES_FIELD, miles.getMiles())
-                .append(MongoConstants.DATE_FIELD, miles.getDate());
-        loggedMilesCollection.insertOne(doc);
     }
 
     @Override
     public int getTeamMiles(TeamID teamID) throws MongoException {
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> teamCollection = database.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
-        Iterator<Document> teamIterator = teamCollection.find(eq(MongoConstants.TEAM_ID_FIELD, teamID.getTeamID())).iterator();
-        if (teamIterator.hasNext()){
-            Document doc = teamIterator.next();
-            List<String> teamMembers = (List<String>)doc.get(MongoConstants.TEAM_MEMBERS_FIELD);
-            int teamMiles = 0;
-            for (String account : teamMembers){
-                AccountID accountID = new AccountID((String)account);
-                teamMiles += getProfileTotalMiles(accountID);
-            }
-            return teamMiles;
+        return 0;
+    }
 
-        }
-        throw new MongoException("A problem occured while getting team data");
+    // =================================================================================================================
+    // HELPER METHODS
+    // =================================================================================================================
+
+    /**
+     * Creates a new Profile document and sub documents that match the implemented schema.
+     * @return a new document that has not been added to the DB. All fields are set to initial values
+     */
+    Document createNewProfileDoc(){
+
+        // Top level profile
+        Map<String, Object> profile = new HashMap<>();
+        profile.put(ProfileConstants.TOTAL_MILES, 0);
+        profile.put(ProfileConstants.NAME, "");
+        profile.put(ProfileConstants.TEAM_NAME, "");
+
+        // Create facebook object
+        Map<String, Object> facebookAuth = new HashMap<>();
+        facebookAuth.put(AuthenticationConstants.FACEBOOK_ID, "");
+        facebookAuth.put(AuthenticationConstants.FACEBOOK_TOKEN, "");
+        facebookAuth.put(AuthenticationConstants.FACEBOOK_EMAIL, "");
+        facebookAuth.put(AuthenticationConstants.FACEBOOK_NAME, "");
+        Document facebookDoc = new Document(facebookAuth);
+
+        // Create Google Object
+        Map<String, Object>googleAuth = new HashMap<>();
+        googleAuth.put(AuthenticationConstants.GOOGLE_ID, "");
+        googleAuth.put(AuthenticationConstants.GOOGLE_TOKEN, "");
+        googleAuth.put(AuthenticationConstants.GOOGLE_EMAIL, "");
+        googleAuth.put(AuthenticationConstants.GOOGLE_NAME, "");
+        Document googleDoc = new Document(googleAuth);
+
+        // Create Twitter Object
+        Map<String, Object>twitterAuth = new HashMap<>();
+        twitterAuth.put(AuthenticationConstants.TWITTER_ID, "");
+        twitterAuth.put(AuthenticationConstants.TWITTER_TOKEN, "");
+        twitterAuth.put(AuthenticationConstants.TWITTER_DISPLAY_NAME, "");
+        twitterAuth.put(AuthenticationConstants.TWITTER_USERNAME, "");
+        Document twitterDoc = new Document(twitterAuth);
+
+        // Create a new document to hold each of the authentication docs
+        Document authentications = new Document(AuthenticationConstants.FACEBOOK_AUTH, facebookDoc)
+                .append(AuthenticationConstants.GOOGLE_AUTH, googleDoc)
+                .append(AuthenticationConstants.TWITTER_AUTH, twitterDoc);
+        profile.put(ProfileConstants.AUTHENTICATIONS, authentications);
+
+        return new Document(profile);
 
 
     }
 
-    int getProfileTotalMiles(AccountID accountID) throws MongoException{
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> profileCollection = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-        Iterator<Document> searchResult = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, accountID.getAccountID())).iterator();
-        if (searchResult.hasNext()){
-            Document foundDoc = searchResult.next();
-            return foundDoc.getInteger(MongoConstants.TOTAL_MILES_FIELD);
-        }
-        throw new MongoException("A problem occured while getting miles for account " + accountID);
+    Profile convertToProfile(Document doc){
+        Profile profile = new Profile();
+        profile.setName(doc.getString(ProfileConstants.NAME));
+        profile.setId(doc.getObjectId("_id").toString());
+        profile.setTeamName(doc.getString(ProfileConstants.TEAM_NAME));
+        profile.setTotalMiles(doc.getInteger(ProfileConstants.TOTAL_MILES));
+
+        // Set facebook Authentication
+        FacebookAuth fb = new FacebookAuth();
+        Document facebookDoc = (Document)
+                ((Document)doc.get(ProfileConstants.AUTHENTICATIONS))
+                        .get(AuthenticationConstants.FACEBOOK_AUTH);
+
+        fb.setName(facebookDoc.getString(AuthenticationConstants.FACEBOOK_NAME));
+        fb.setId(facebookDoc.getString(AuthenticationConstants.FACEBOOK_ID));
+        fb.setEmail(facebookDoc.getString(AuthenticationConstants.FACEBOOK_EMAIL));
+        fb.setToken(facebookDoc.getString(AuthenticationConstants.FACEBOOK_TOKEN));
+
+        // Set google Authentication
+        GoogleAuth google = new GoogleAuth();
+        Document googleDoc = (Document)
+                ((Document) doc.get(ProfileConstants.AUTHENTICATIONS)).get(AuthenticationConstants.GOOGLE_AUTH);
+
+        google.setName(googleDoc.getString(AuthenticationConstants.GOOGLE_NAME));
+        google.setEmail(googleDoc.getString(AuthenticationConstants.GOOGLE_EMAIL));
+        google.setToken(googleDoc.getString(AuthenticationConstants.GOOGLE_TOKEN));
+        google.setId(googleDoc.getString(AuthenticationConstants.GOOGLE_ID));
+
+        // Set twitter Authentication
+        TwitterAuth twitter = new TwitterAuth();
+        Document twitterDoc = (Document)
+                ((Document)doc.get(ProfileConstants.AUTHENTICATIONS)).get(AuthenticationConstants.TWITTER_AUTH);
+
+        twitter.setId(twitterDoc.getString(AuthenticationConstants.TWITTER_ID));
+        twitter.setToken(twitterDoc.getString(AuthenticationConstants.TWITTER_TOKEN));
+        twitter.setDisplayName(twitterDoc.getString(AuthenticationConstants.TWITTER_DISPLAY_NAME));
+        twitter.setUsername(twitterDoc.getString(AuthenticationConstants.TWITTER_USERNAME));
+
+        // Add authentications to profile
+        profile.setGoogle(google);
+        profile.setTwitter(twitter);
+        profile.setFacebook(fb);
+
+        return profile;
 
     }
 
-    //TODO: Add exception if problem with DB
-    Profile getProfileBean(Object memberID){
-        String id = (String) memberID;
-        MongoDatabase database = client.getDatabase(MongoConstants.DATABASE_NAME);
-        MongoCollection<Document> documents = database.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-        FindIterable<Document> account = documents.find(eq(MongoConstants.ACCOUNT_ID_FIELD, id));
-        Profile requestedProfile = new Profile();
-        if(account.iterator().hasNext()){
-            Document profileDoc = account.iterator().next();
-            requestedProfile.setFirstName(profileDoc.getString(MongoConstants.FIRST_NAME_FIELD));
-            requestedProfile.setLastName(profileDoc.getString(MongoConstants.LAST_NAME_FIELD));
-            requestedProfile.setTeamName(profileDoc.getString(MongoConstants.TEAM_ID_FIELD));
-            requestedProfile.setTotalMiles(profileDoc.getInteger(MongoConstants.TOTAL_MILES_FIELD));
-            return requestedProfile;
-        }
+    Profile createProfileFromAuth(FacebookAuth auth) throws MongoException{
+        Document facebookProfile = createNewProfileDoc();
+        // Get the facebook authentication doc
+        Document facebookAuth = (Document)
+                ((Document)facebookProfile.get(ProfileConstants.AUTHENTICATIONS))
+                        .get(AuthenticationConstants.FACEBOOK_AUTH);
+
+        // Set the fields in the facebook authentication doc
+        facebookAuth.replace(AuthenticationConstants.FACEBOOK_ID, auth.getId());
+        facebookAuth.replace(AuthenticationConstants.FACEBOOK_TOKEN, auth.getToken());
+        facebookAuth.replace(AuthenticationConstants.FACEBOOK_EMAIL, auth.getEmail());
+        facebookAuth.replace(AuthenticationConstants.FACEBOOK_NAME, auth.getName());
+
+        // Update profile fields
+        facebookProfile.replace(ProfileConstants.NAME, auth.getName());
+
+        // Insert new profile into db
+        profileCollection.insertOne(facebookProfile);
+
+        return convertToProfile(facebookProfile);
+
+    }
+
+    //TODO: Implement
+    Profile createProfileFromAuth(GoogleAuth auth) throws MongoException {
         return null;
+        
     }
+
+    // TODO: Implement
+    Profile createProfileFromAuth(TwitterAuth auth) throws MongoException {
+        return null;
+
+    }
+
 }

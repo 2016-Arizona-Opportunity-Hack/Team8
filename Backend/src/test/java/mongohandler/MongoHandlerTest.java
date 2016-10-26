@@ -1,19 +1,22 @@
 package mongohandler;
 
 
-import beans.AccountID;
+import beans.AuthBeans.FacebookAuth;
+import beans.AuthBeans.GoogleAuth;
+import beans.AuthBeans.TwitterAuth;
 import beans.Profile;
-import com.mongodb.BasicDBList;
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoIterable;
+import mongohandler.constants.AuthenticationConstants;
+import mongohandler.constants.MongoConstants;
+import mongohandler.constants.ProfileConstants;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.testng.Assert;
-import static com.mongodb.client.model.Filters.*;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -21,97 +24,115 @@ import java.util.Iterator;
  */
 public class MongoHandlerTest{
 
-    MongoClient client;
-    MongoDatabase mongoDatabase;
+    MongoHandler testHandler;
+
 
     @BeforeClass
+    public void dataSetup() {
+        MongoClient client = MongoConnection.getMongoClient("localhost", MongoConstants.DEFAULT_PORT);
+        client.dropDatabase("TESTDB");
+    }
+
+    @BeforeTest
     public void setup() throws Exception {
-        client = new MongoClient();
-        mongoDatabase = client.getDatabase(MongoConstants.DATABASE_NAME);
+        testHandler = new MongoHandler("localhost", MongoConstants.DEFAULT_PORT, "TESTDB");
     }
 
-    public Document getTestDocument(){
-        Document testProfile = new Document(MongoConstants.FIRST_NAME_FIELD, "TEST")
-                .append(MongoConstants.LAST_NAME_FIELD, "PROFILE")
-                .append(MongoConstants.TEAM_ID_FIELD, "")
-                .append(MongoConstants.TOTAL_MILES_FIELD, 100)
-                .append(MongoConstants.ACCOUNT_ID_FIELD, "test@test.com");
-        return testProfile;
-    }
 
     @Test
-    public void testDBConnection() throws Exception {
-        MongoClient client = new MongoClient();
-        Iterable<String> databases = client.listDatabaseNames();
-        Iterator dbIterator = databases.iterator();
-        while(dbIterator.hasNext()){
-            System.out.println(dbIterator.next());
-        }
+    public void getProfileFacebookAuthTest() throws Exception{
+        FacebookAuth auth = new FacebookAuth();
+        auth.setName("TEST NAME");
+        auth.setToken("TEST TOKEN");
+        auth.setEmail("TEST@TEST.com");
+        auth.setId("ABCDEFG");
 
-        Document testProfile1 = new Document(MongoConstants.FIRST_NAME_FIELD, "TEST")
-                .append(MongoConstants.LAST_NAME_FIELD, "PROFILE")
-                .append(MongoConstants.TEAM_ID_FIELD, "TEST_TEAM")
-                .append(MongoConstants.TOTAL_MILES_FIELD, 100)
-                .append(MongoConstants.ACCOUNT_ID_FIELD, "test@test.com");
+        final long startCollectionSize = testHandler.profileCollection.count();
 
-        Document testProfile2 = new Document(MongoConstants.FIRST_NAME_FIELD, "TEST")
-                .append(MongoConstants.LAST_NAME_FIELD, "PROFILE2")
-                .append(MongoConstants.TEAM_ID_FIELD, "TEST_TEAM")
-                .append(MongoConstants.TOTAL_MILES_FIELD, 50)
-                .append(MongoConstants.ACCOUNT_ID_FIELD, "test2@test.com");
+        Profile newProfile = testHandler.getProfile(auth);
+        Profile expectedProfile = new Profile();
+        expectedProfile.setFacebook(auth);
+        expectedProfile.setName(auth.name);
+        expectedProfile.setTotalMiles(0);
+        expectedProfile.setId(newProfile.id);
+        expectedProfile.setTwitter(new TwitterAuth());
+        expectedProfile.setGoogle(new GoogleAuth());
 
-        MongoCollection<Document> profileCollection = mongoDatabase.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-        profileCollection.insertOne(testProfile1);
-        profileCollection.insertOne(testProfile2);
+        Assert.assertEquals(newProfile, expectedProfile, "Test that new profile is returned");
 
+        Assert.assertEquals(testHandler.profileCollection.count(), startCollectionSize + 1, "A new profile should have been added to the database");
 
-        BasicDBList list = new BasicDBList();
-        list.add("test@test.com");
-        list.add("test2@test.com");
-
-
-        Document doc = new Document(MongoConstants.TEAM_ID_FIELD, "TEST_TEAM")
-                .append(MongoConstants.TEAM_MEMBERS_FIELD, list);
-
-        MongoCollection<Document> teamCollection = mongoDatabase.getCollection(MongoConstants.TEAM_COLLECTION_NAME);
-        teamCollection.insertOne(doc);
-
+        Profile anotherProfile = testHandler.getProfile(auth);
+        Assert.assertEquals(testHandler.profileCollection.count(), startCollectionSize + 1, "Subsequent calls to get profile do not result in additional profiles");
 
     }
 
     @Test
-    public void profileExistsTest() throws Exception {
-        MongoCollection<Document> profileCollection = mongoDatabase.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
+    public void convertToProfileTest() throws Exception {
 
-        Document testProfile = getTestDocument();
-        profileCollection.insertOne(testProfile);
+        // Stub facebook and document for facebook
+        FacebookAuth facebookAuth = new FacebookAuth();
+        facebookAuth.setId("facebook123");
+        facebookAuth.setName("facebook name");
+        facebookAuth.setEmail("facebook email");
+        facebookAuth.setToken("facebook token");
 
-        MongoHandler handler = new MongoHandler();
+        Document facebookDoc = new Document(AuthenticationConstants.FACEBOOK_ID, "facebook123")
+                .append(AuthenticationConstants.FACEBOOK_NAME, "facebook name")
+                .append(AuthenticationConstants.FACEBOOK_EMAIL, "facebook email")
+                .append(AuthenticationConstants.FACEBOOK_TOKEN, "facebook token");
 
-        AccountID testID = new AccountID();
-        testID.setAccountID("test@test.com");
-        Assert.assertTrue(handler.exists(testID), "The test ID does exist in the DB");
+        // Stub google and document for google
+        GoogleAuth google = new GoogleAuth();
+        google.setId("google123");
+        google.setName("google name");
+        google.setEmail("google email");
+        google.setToken("google token");
 
-        testID.setAccountID("negative@test.com");
-        Assert.assertFalse(handler.exists(testID), "The test ID Does not exist in DB");
+        Document googleDoc = new Document(AuthenticationConstants.GOOGLE_ID, "google123")
+                .append(AuthenticationConstants.GOOGLE_NAME, "google name")
+                .append(AuthenticationConstants.GOOGLE_EMAIL, "google email")
+                .append(AuthenticationConstants.GOOGLE_TOKEN, "google token");
+
+        // Stub twitter and document for twitter
+        TwitterAuth twitterAuth = new TwitterAuth();
+        twitterAuth.setDisplayName("twitter display");
+        twitterAuth.setUsername("twitter username");
+        twitterAuth.setId("twitter123");
+        twitterAuth.setToken("twitter token");
+
+        Document twitterDoc = new Document(AuthenticationConstants.TWITTER_DISPLAY_NAME, "twitter display")
+                .append(AuthenticationConstants.TWITTER_USERNAME, "twitter username")
+                .append(AuthenticationConstants.TWITTER_ID, "twitter123")
+                .append(AuthenticationConstants.TWITTER_TOKEN, "twitter token");
+
+        // Create authentication
+        Profile expectedProfile = new Profile();
+        expectedProfile.setGoogle(google);
+        expectedProfile.setFacebook(facebookAuth);
+        expectedProfile.setTwitter(twitterAuth);
+        Document authInput = new Document(AuthenticationConstants.FACEBOOK_AUTH, facebookDoc)
+                .append(AuthenticationConstants.GOOGLE_AUTH, googleDoc)
+                .append(AuthenticationConstants.TWITTER_AUTH, twitterDoc);
+
+
+        // Add root document information
+        Date d = new Date();
+        Document input = new Document(ProfileConstants.NAME, "TEST NAME")
+                .append(ProfileConstants.TEAM_NAME, "TEAM NAME")
+                .append(ProfileConstants.TOTAL_MILES, 100)
+                .append(ProfileConstants.AUTHENTICATIONS, authInput)
+                .append("_id", new ObjectId(d));
+
+
+
+        expectedProfile.setName("TEST NAME");
+        expectedProfile.setTeamName("TEAM NAME");
+        expectedProfile.setTotalMiles(100);
+
+
+        Assert.assertEquals(testHandler.convertToProfile(input), expectedProfile);
 
     }
-
-    @Test
-    public void populateProfileTest() throws Exception {
-        Profile testProfile = new Profile();
-        testProfile.setTeamName("");
-        testProfile.setId("test1@test.com");
-        testProfile.setLastName("TEST_LAST");
-        testProfile.setFirstName("TEST_FIRST");
-        testProfile.setTotalMiles(0);
-
-        MongoHandler handler = new MongoHandler();
-        handler.populateProfile(testProfile);
-
-        MongoCollection<Document> profileCollection = mongoDatabase.getCollection(MongoConstants.PROFILE_COLLECTION_NAME);
-        MongoIterable<Document> searchRestult = profileCollection.find(eq(MongoConstants.ACCOUNT_ID_FIELD, "test1@test.com"));
-    }
-
 
 }
