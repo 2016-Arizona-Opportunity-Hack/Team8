@@ -8,7 +8,9 @@
 .team-present, .team-not{
   display: none;
 }
-
+.sitebanner{
+  background-image: url('../Contents/Images/sitebanner.jpg');
+}
 #team-name{
   display: none;
 }
@@ -16,4 +18,32 @@
       display: block;
       margin-left: auto;
       margin-right: auto;
+}
+.sitebanner{
+  width:100%;
+  height: 55%
+}
+.navbar{
+  border-radius: 0px;
+}
+.well{
+  background-color: white;
+  border:none;
+  box-shadow: none;
+}
+.team-not input, .well input{
+  background: #E9E9E9;
+  height: 34px;
+}
+
+#subBut, .btn, .btn:hover, .btn:active, .btn:visited {
+    background-color: black;
+    background: black;
+    color: #FAB800;
+    height: 34px;
+    border-color: black;
+}
+.team-not .glyphicon{
+  top:-3px !important;
+  color: #FAB800;
 }
